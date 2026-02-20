@@ -1,0 +1,220 @@
+/* ================================================================
+   ARNAV FLIGHTS — Animations & Keyframes
+   ================================================================ */
+
+/* ── Nebula / Background Glow ───────────────────────────────────── */
+@keyframes nebula-pulse {
+  0%   { transform: scale(1)   translateX(0)   translateY(0);   opacity: 0.9; }
+  50%  { transform: scale(1.1) translateX(20px) translateY(-15px); opacity: 1; }
+  100% { transform: scale(0.95) translateX(-10px) translateY(10px); opacity: 0.85; }
+}
+
+/* ── Dot Pulse ──────────────────────────────────────────────────── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.75); }
+}
+
+/* ── Hero plane float ───────────────────────────────────────────── */
+@keyframes hero-plane-float {
+  0%   { transform: translateY(-50%) rotate(0deg)   translateX(0); }
+  25%  { transform: translateY(-52%) rotate(1.5deg) translateX(12px); }
+  50%  { transform: translateY(-48%) rotate(0deg)   translateX(0); }
+  75%  { transform: translateY(-52%) rotate(-1.5deg) translateX(-12px); }
+  100% { transform: translateY(-50%) rotate(0deg)   translateX(0); }
+}
+
+/* ── Plane fly animation (route line) ───────────────────────────── */
+@keyframes plane-fly {
+  0%   { transform: translate(-50%, -50%) scale(1); }
+  50%  { transform: translate(-50%, -60%) scale(1.1); }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+/* ── Marquee (airlines strip) ───────────────────────────────────── */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ── Scroll indicator ───────────────────────────────────────────── */
+@keyframes scroll-bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.6; }
+  50%       { transform: translateX(-50%) translateY(8px); opacity: 0.9; }
+}
+
+/* ── Page fade in ───────────────────────────────────────────────── */
+@keyframes page-fade-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Loader ─────────────────────────────────────────────────────── */
+@keyframes loader-fly {
+  0%   { transform: translateX(-30px) rotate(-10deg); opacity: 0.5; }
+  50%  { transform: translateX(0)    rotate(0deg);   opacity: 1; }
+  100% { transform: translateX(30px)  rotate(10deg);  opacity: 0.5; }
+}
+@keyframes loader-fill {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+
+/* ── Success pop ────────────────────────────────────────────────── */
+@keyframes success-pop {
+  0%   { transform: scale(0.5); opacity: 0; }
+  60%  { transform: scale(1.15); }
+  80%  { transform: scale(0.95); }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+/* ── Card shimmer hover ─────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+/* ── Counter number tick ────────────────────────────────────────── */
+@keyframes counter-tick {
+  0%  { transform: translateY(8px); opacity: 0; }
+  100%{ transform: translateY(0);   opacity: 1; }
+}
+
+/* ── Glow pulse on selected seat ────────────────────────────────── */
+@keyframes seat-glow {
+  0%, 100% { box-shadow: 0 4px 12px rgba(37,99,235,0.4); }
+  50%       { box-shadow: 0 4px 24px rgba(37,99,235,0.7); }
+}
+.seat-selected { animation: seat-glow 2s ease-in-out infinite; }
+
+/* ── Ticket appear ──────────────────────────────────────────────── */
+@keyframes ticket-appear {
+  0%  { transform: translateY(40px) rotateX(8deg); opacity: 0; }
+  100%{ transform: translateY(0) rotateX(0);       opacity: 1; }
+}
+.ticket-card { animation: ticket-appear 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.3s both; }
+
+/* ── Stars canvas ───────────────────────────────────────────────── */
+@keyframes star-twinkle {
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 1; }
+}
+
+/* ── Slide in from right ────────────────────────────────────────── */
+@keyframes slide-in-right {
+  from { transform: translateX(40px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+/* ── Slide in from left ─────────────────────────────────────────── */
+@keyframes slide-in-left {
+  from { transform: translateX(-40px); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+
+/* ── Scale in ───────────────────────────────────────────────────── */
+@keyframes scale-in {
+  from { transform: scale(0.92); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+/* ── Float badge ────────────────────────────────────────────────── */
+@keyframes float-badge {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+/* ── Booking step progress line ─────────────────────────────────── */
+@keyframes progress-fill {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+
+/* ── Price pop ──────────────────────────────────────────────────── */
+@keyframes price-pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+.price-pop { animation: price-pop 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+
+/* ── Skeleton loading ───────────────────────────────────────────── */
+@keyframes skeleton {
+  0%   { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-2) 25%, var(--bg-3) 50%, var(--bg-2) 75%);
+  background-size: 400px 100%;
+  animation: skeleton 1.4s ease infinite;
+  border-radius: var(--radius-sm);
+}
+
+/* ── Search button pulse ────────────────────────────────────────── */
+@keyframes btn-glow-pulse {
+  0%, 100% { box-shadow: 0 8px 32px rgba(59,130,246,0.25); }
+  50%       { box-shadow: 0 8px 48px rgba(59,130,246,0.5); }
+}
+.btn-search-pulse { animation: btn-glow-pulse 2.5s ease-in-out infinite; }
+
+/* ── Aircraft trail ─────────────────────────────────────────────── */
+@keyframes trail-fade {
+  0%   { opacity: 0.6; transform: scaleX(1); }
+  100% { opacity: 0;   transform: scaleX(0); }
+}
+
+/* ── Mobile menu items ──────────────────────────────────────────── */
+@keyframes menu-item-in {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+.mobile-nav.open .mobile-nav-links li {
+  animation: menu-item-in 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+.mobile-nav.open .mobile-nav-links li:nth-child(1) { animation-delay: 0.05s; }
+.mobile-nav.open .mobile-nav-links li:nth-child(2) { animation-delay: 0.10s; }
+.mobile-nav.open .mobile-nav-links li:nth-child(3) { animation-delay: 0.15s; }
+.mobile-nav.open .mobile-nav-links li:nth-child(4) { animation-delay: 0.20s; }
+.mobile-nav.open .mobile-nav-links li:nth-child(5) { animation-delay: 0.25s; }
+
+/* ── Gradient border animation ──────────────────────────────────── */
+@keyframes gradient-rotate {
+  0%   { --angle: 0deg; }
+  100% { --angle: 360deg; }
+}
+
+/* ── Staggered reveal helpers ───────────────────────────────────── */
+.stagger-1 { animation-delay: 0.05s !important; }
+.stagger-2 { animation-delay: 0.10s !important; }
+.stagger-3 { animation-delay: 0.15s !important; }
+.stagger-4 { animation-delay: 0.20s !important; }
+.stagger-5 { animation-delay: 0.25s !important; }
+.stagger-6 { animation-delay: 0.30s !important; }
+
+/* ── Parallax containers ────────────────────────────────────────── */
+.parallax-slow   { will-change: transform; }
+.parallax-medium { will-change: transform; }
+
+/* ── Tag appear ─────────────────────────────────────────────────── */
+@keyframes tag-appear {
+  from { transform: scale(0.8) translateY(4px); opacity: 0; }
+  to   { transform: scale(1) translateY(0);     opacity: 1; }
+}
+.flight-tag { animation: tag-appear 0.3s cubic-bezier(0.34,1.56,0.64,1) both; }
+
+/* ── Confirmation confetti ──────────────────────────────────────── */
+@keyframes confetti-fall {
+  0%   { transform: translateY(-100vh) rotate(0deg) scaleX(1);   opacity: 1; }
+  50%  { transform: translateY(30vh)   rotate(180deg) scaleX(-1); opacity: 0.9; }
+  100% { transform: translateY(110vh)  rotate(360deg) scaleX(1);  opacity: 0; }
+}
+
+.confetti-piece {
+  position: fixed;
+  width: 8px;
+  height: 12px;
+  border-radius: 2px;
+  animation: confetti-fall linear both;
+  z-index: 9998;
+  pointer-events: none;
+}
