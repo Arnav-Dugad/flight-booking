@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile — Arnav Flights</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
+</head>
+<body>
+
+<!-- Page Loader -->
+<div id="pageLoader" class="page-loader">
+  <div class="loader-plane">✈</div>
+  <div class="loader-logo">Arnav <span style="color:var(--blue-400)">Flights</span></div>
+  <div class="loader-bar"><div class="loader-progress"></div></div>
+</div>
+
+<!-- Demo Mode Bar -->
+<div class="demo-mode-bar" id="demoModeBar"></div>
+
+<!-- Navigation -->
+<nav class="nav scrolled" id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon">✈</div>
+      Arnav <span>Flights</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="results.html">Search Flights</a></li>
+      <li><a href="airlines.html">Airlines</a></li>
+      <li><a href="booking.html">My Trips</a></li>
+    </ul>
+    <div class="nav-actions">
+      <div id="navGuest" style="display:flex;align-items:center;gap:8px;">
+        <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
+        <a href="login.html?tab=signup" class="btn btn-primary btn-sm">Sign Up</a>
+      </div>
+      <div id="navUser" style="display:none;align-items:center;gap:8px;">
+        <a href="admin.html" class="btn btn-ghost btn-sm" id="navAdminBtn" style="display:none;font-size:0.8125rem;">⚙ Admin</a>
+        <a href="profile.html" class="nav-avatar" id="navAvatar" data-tooltip="My Profile">AF</a>
+        <button class="btn btn-ghost btn-sm" id="navSignOutBtn">Sign Out</button>
+      </div>
+    </div>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- Mobile Nav -->
+<div class="mobile-nav" id="mobileNav">
+  <button id="mobileClose" style="position:absolute;top:24px;right:24px;font-size:1.5rem;color:var(--text-3);cursor:pointer;">✕</button>
+  <ul class="mobile-nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="results.html">Search Flights</a></li>
+    <li><a href="airlines.html">Airlines</a></li>
+    <li><a href="booking.html">My Trips</a></li>
+  </ul>
+  <div id="mobileGuestLinks" style="margin-top:24px;display:flex;flex-direction:column;align-items:center;gap:10px;">
+    <a href="login.html" class="btn btn-primary" style="min-width:200px;text-align:center;">Sign In</a>
+    <a href="login.html?tab=signup" class="btn btn-ghost" style="min-width:200px;text-align:center;">Create Account</a>
+  </div>
+  <div id="mobileUserLinks" style="margin-top:24px;display:none;flex-direction:column;align-items:center;gap:10px;">
+    <div id="mobileUserName" style="font-size:1rem;font-weight:600;color:var(--text-0);margin-bottom:4px;"></div>
+    <a href="profile.html" class="btn btn-ghost" style="min-width:200px;text-align:center;">My Profile</a>
+    <a href="admin.html" id="mobileAdminBtn" class="btn btn-ghost" style="display:none;min-width:200px;text-align:center;">⚙ Admin Panel</a>
+    <button class="btn btn-ghost" id="mobileSignOut" style="min-width:200px;color:var(--rose);">Sign Out</button>
+  </div>
+</div>
+
+<!-- Profile Page Content -->
+<div class="profile-page">
+  <div class="container">
+
+    <!-- Profile Header -->
+    <div class="profile-header reveal">
+      <div class="profile-avatar-wrap">
+        <div class="profile-avatar" id="profileAvatarDisplay">AF</div>
+        <div class="profile-avatar-edit" onclick="document.getElementById('avatarInput').click()" title="Change photo">✏️</div>
+        <input type="file" id="avatarInput" accept="image/*" style="display:none;" onchange="handleAvatarChange(this)">
+      </div>
+      <div class="profile-header-info">
+        <div class="profile-name" id="profileName">Loading...</div>
+        <div class="profile-email" id="profileEmail">—</div>
+        <div class="profile-meta">
+          <div class="profile-meta-item" id="profilePhone">📱 —</div>
+          <div class="profile-meta-item" id="profileCity">📍 —</div>
+          <div class="profile-meta-item" id="profileJoined">📅 Joined —</div>
+          <div class="profile-meta-item" id="profileBookings">✈ 0 Bookings</div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+          <div class="profile-badge profile-badge-member" id="profileMemberBadge">✦ Member</div>
+          <div class="profile-badge profile-badge-admin" id="profileAdminBadge" style="display:none;">⚙ Admin</div>
+        </div>
+      </div>
+      <div style="margin-left:auto;">
+        <a href="admin.html" class="btn btn-gold btn-sm" id="profileAdminBtn" style="display:none;">Admin Dashboard →</a>
+      </div>
+    </div>
+
+    <!-- Profile Tabs -->
+    <div class="profile-tabs">
+      <div class="profile-tab active" onclick="switchProfileTab('info', this)">👤 Profile Info</div>
+      <div class="profile-tab" onclick="switchProfileTab('bookings', this)">✈ My Bookings</div>
+      <div class="profile-tab" onclick="switchProfileTab('security', this)">🔒 Security</div>
+      <div class="profile-tab" onclick="switchProfileTab('settings', this)">⚙ Settings</div>
+    </div>
+
+    <!-- ── TAB: Profile Info ───────────────────────────────────── -->
+    <div id="tab-info" class="profile-tab-content active">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+
+        <div>
+          <div class="form-section">
+            <div class="form-section-title">
+              <div class="form-section-icon">👤</div>
+              Personal Information
+            </div>
+            <div style="display:flex;flex-direction:column;gap:14px;">
+              <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" id="editName" class="form-input" placeholder="Your full name">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" id="editEmail" class="form-input" placeholder="Email" disabled
+                  style="opacity:0.6;cursor:not-allowed;" title="Email cannot be changed">
+                <div style="font-size:0.7rem;color:var(--text-5);margin-top:4px;">Email cannot be changed after registration.</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" id="editPhone" class="form-input" placeholder="+91 98765 43210">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-title">
+              <div class="form-section-icon">🌍</div>
+              Location
+            </div>
+            <div style="display:flex;flex-direction:column;gap:14px;">
+              <div class="form-group">
+                <label class="form-label">City</label>
+                <input type="text" id="editCity" class="form-input" placeholder="Your city">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Country</label>
+                <select id="editCountry" class="form-select">
+                  <option value="India">India</option>
+                  <option value="UAE">UAE</option>
+                  <option value="USA">United States</option>
+                  <option value="UK">United Kingdom</option>
+                  <option value="Singapore">Singapore</option>
+                  <option value="Australia">Australia</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary" style="width:100%;" onclick="saveProfile()">
+            💾 Save Changes
+          </button>
+        </div>
+
+        <div>
+          <div class="form-section">
+            <div class="form-section-title">
+              <div class="form-section-icon">✈</div>
+              Travel Preferences
+            </div>
+            <div style="display:flex;flex-direction:column;gap:14px;">
+              <div class="form-group">
+                <label class="form-label">Preferred Cabin Class</label>
+                <select id="editClass" class="form-select">
+                  <option value="economy">Economy</option>
+                  <option value="premium-economy">Premium Economy</option>
+                  <option value="business">Business</option>
+                  <option value="first">First Class</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Meal Preference</label>
+                <select id="editMeal" class="form-select">
+                  <option>No Preference</option>
+                  <option>Vegetarian</option>
+                  <option>Vegan</option>
+                  <option>Jain</option>
+                  <option>Halal</option>
+                  <option>Gluten-Free</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Frequent Flyer Number (Optional)</label>
+                <input type="text" id="editFF" class="form-input" placeholder="e.g. AI-123456789">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-title">
+              <div class="form-section-icon">📊</div>
+              Account Stats
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div style="text-align:center;padding:16px;background:var(--bg-2);border-radius:var(--radius-md);">
+                <div style="font-size:1.5rem;font-weight:700;color:var(--blue-400);" id="statBookings">0</div>
+                <div style="font-size:0.75rem;color:var(--text-4);margin-top:3px;">Total Bookings</div>
+              </div>
+              <div style="text-align:center;padding:16px;background:var(--bg-2);border-radius:var(--radius-md);">
+                <div style="font-size:1.5rem;font-weight:700;color:var(--gold);" id="statPoints">0</div>
+                <div style="font-size:0.75rem;color:var(--text-4);margin-top:3px;">Reward Points</div>
+              </div>
+              <div style="text-align:center;padding:16px;background:var(--bg-2);border-radius:var(--radius-md);">
+                <div style="font-size:1.5rem;font-weight:700;color:var(--emerald);" id="statSaved">₹0</div>
+                <div style="font-size:0.75rem;color:var(--text-4);margin-top:3px;">Total Saved</div>
+              </div>
+              <div style="text-align:center;padding:16px;background:var(--bg-2);border-radius:var(--radius-md);">
+                <div style="font-size:1.5rem;font-weight:700;color:var(--violet);" id="statLevel">Silver</div>
+                <div style="font-size:0.75rem;color:var(--text-4);margin-top:3px;">Member Tier</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── TAB: My Bookings ───────────────────────────────────── -->
+    <div id="tab-bookings" class="profile-tab-content">
+      <div class="admin-table-wrap">
+        <div class="admin-table-header">
+          <div class="admin-table-title">✈ Booking History</div>
+          <a href="results.html" class="btn btn-primary btn-sm">+ New Booking</a>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="booking-table" id="bookingHistoryTable">
+            <thead>
+              <tr>
+                <th>Booking ID</th>
+                <th>Route</th>
+                <th>Airline</th>
+                <th>Travel Date</th>
+                <th>Class</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="bookingHistoryBody">
+              <tr>
+                <td colspan="8" style="text-align:center;padding:40px;color:var(--text-4);">
+                  <div style="font-size:2rem;margin-bottom:8px;">✈</div>
+                  Loading bookings...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: Security ─────────────────────────────────────────── -->
+    <div id="tab-security" class="profile-tab-content">
+      <div style="max-width:500px;display:flex;flex-direction:column;gap:16px;">
+
+        <div class="form-section">
+          <div class="form-section-title">
+            <div class="form-section-icon">🔑</div>
+            Change Password
+          </div>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div class="form-group">
+              <label class="form-label">Current Password</label>
+              <div class="password-wrapper">
+                <input type="password" id="currentPwd" class="form-input" placeholder="Enter current password" style="padding-right:44px;">
+                <button type="button" class="password-toggle" onclick="togglePassword('currentPwd', this)">👁</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">New Password</label>
+              <div class="password-wrapper">
+                <input type="password" id="newPwd" class="form-input" placeholder="At least 6 characters" style="padding-right:44px;">
+                <button type="button" class="password-toggle" onclick="togglePassword('newPwd', this)">👁</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Confirm New Password</label>
+              <input type="password" id="confirmPwd" class="form-input" placeholder="Re-enter new password">
+            </div>
+            <div id="pwdMsg" style="font-size:0.8125rem;display:none;"></div>
+            <button class="btn btn-primary" onclick="changePassword()">Update Password</button>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">
+            <div class="form-section-icon">🛡️</div>
+            Account Security
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg-2);border-radius:var(--radius-md);">
+              <div>
+                <div style="font-size:0.875rem;font-weight:500;color:var(--text-0);">Two-Factor Authentication</div>
+                <div style="font-size:0.75rem;color:var(--text-4);">Add an extra layer of security</div>
+              </div>
+              <button class="btn btn-ghost btn-sm" onclick="showToast('2FA coming soon!','🛡️')">Enable</button>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg-2);border-radius:var(--radius-md);">
+              <div>
+                <div style="font-size:0.875rem;font-weight:500;color:var(--text-0);">Login Notifications</div>
+                <div style="font-size:0.75rem;color:var(--text-4);">Get emailed on new sign-ins</div>
+              </div>
+              <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer;">
+                <input type="checkbox" checked style="opacity:0;width:0;height:0;" id="loginNotif">
+                <span onclick="this.previousElementSibling.click();this.style.background=this.previousElementSibling.checked?'var(--blue-600)':'var(--bg-3)'"
+                  style="position:absolute;inset:0;border-radius:24px;background:var(--blue-600);transition:0.3s;">
+                  <span style="position:absolute;width:18px;height:18px;background:white;border-radius:50%;top:3px;left:3px;transition:0.3s;"></span>
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section" style="border-color:rgba(244,63,94,0.2);">
+          <div class="form-section-title" style="color:var(--rose);">
+            <div class="form-section-icon" style="background:rgba(244,63,94,0.1);">⚠️</div>
+            Danger Zone
+          </div>
+          <p style="font-size:0.875rem;color:var(--text-3);margin-bottom:16px;">
+            Once you delete your account, there is no going back. This will permanently delete all your data.
+          </p>
+          <button class="btn btn-sm" style="background:rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.3);color:var(--rose);"
+            onclick="confirmDeleteAccount()">🗑 Delete My Account</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── TAB: Settings ──────────────────────────────────────────── -->
+    <div id="tab-settings" class="profile-tab-content">
+      <div style="max-width:500px;display:flex;flex-direction:column;gap:16px;">
+
+        <div class="form-section">
+          <div class="form-section-title"><div class="form-section-icon">🔔</div>Notifications</div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div>
+                <div style="font-size:0.875rem;font-weight:500;color:var(--text-0);">Booking Confirmation</div>
+                <div style="font-size:0.75rem;color:var(--text-4);">Email when booking is confirmed</div>
+              </div>
+              <input type="checkbox" checked style="cursor:pointer;accent-color:var(--blue-600);width:18px;height:18px;">
+            </div>
+            <div style="height:1px;background:var(--glass-border);"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div>
+                <div style="font-size:0.875rem;font-weight:500;color:var(--text-0);">Price Alerts</div>
+                <div style="font-size:0.75rem;color:var(--text-4);">Alert when watched flights drop in price</div>
+              </div>
+              <input type="checkbox" checked style="cursor:pointer;accent-color:var(--blue-600);width:18px;height:18px;">
+            </div>
+            <div style="height:1px;background:var(--glass-border);"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div>
+                <div style="font-size:0.875rem;font-weight:500;color:var(--text-0);">Promotional Offers</div>
+                <div style="font-size:0.75rem;color:var(--text-4);">Exclusive deals and discount codes</div>
+              </div>
+              <input type="checkbox" style="cursor:pointer;accent-color:var(--blue-600);width:18px;height:18px;">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title"><div class="form-section-icon">🌐</div>Preferences</div>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div class="form-group">
+              <label class="form-label">Currency</label>
+              <select class="form-select">
+                <option>INR — Indian Rupee</option>
+                <option>USD — US Dollar</option>
+                <option>EUR — Euro</option>
+                <option>GBP — British Pound</option>
+                <option>AED — UAE Dirham</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Language</label>
+              <select class="form-select">
+                <option>English</option>
+                <option>Hindi</option>
+                <option>Arabic</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="saveSettings()">💾 Save Settings</button>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding-top:24px;border-top:1px solid var(--glass-border);">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-icon">✈</div>
+        Arnav <span style="color:var(--blue-400)">Flights</span>
+      </a>
+      <div style="font-size:0.8125rem;color:var(--text-5);">© 2024 Arnav Flights. All rights reserved.</div>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/auth.js"></script>
+<script>
+  /* Require login */
+  document.addEventListener('DOMContentLoaded', () => {
+    if (!window.af) return;
+    window.af.auth.onAuthStateChanged(user => {
+      if (!user) { window.location.href = 'login.html?redirect=profile.html'; return; }
+      loadProfile(user);
+    });
+  });
+
+  function loadProfile(user) {
+    /* Header */
+    const initials = (user.displayName||user.email).split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+    document.getElementById('profileAvatarDisplay').textContent = initials;
+    document.getElementById('profileName').textContent    = user.displayName || user.email;
+    document.getElementById('profileEmail').textContent   = user.email;
+    document.getElementById('profilePhone').textContent   = '📱 ' + (user.phone || 'Not set');
+    document.getElementById('profileCity').textContent    = '📍 ' + (user.city || 'Not set');
+    document.getElementById('profileJoined').textContent  = '📅 Joined ' + (user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-IN',{month:'short',year:'numeric'}) : 'Unknown');
+    document.getElementById('profileBookings').textContent = `✈ ${user.bookingCount||0} Bookings`;
+
+    if (user.isAdmin) {
+      document.getElementById('profileAdminBadge').style.display = 'inline-flex';
+      document.getElementById('profileAdminBtn').style.display   = 'inline-flex';
+    }
+
+    /* Edit form */
+    document.getElementById('editName').value    = user.displayName || '';
+    document.getElementById('editEmail').value   = user.email || '';
+    document.getElementById('editPhone').value   = user.phone || '';
+    document.getElementById('editCity').value    = user.city || '';
+    document.getElementById('editCountry').value = user.country || 'India';
+
+    /* Stats */
+    const bookings = window.af.db.getUserBookings(user.uid);
+    const confirmed = bookings.filter(b => b.status === 'confirmed');
+    document.getElementById('statBookings').textContent = bookings.length;
+    document.getElementById('statPoints').textContent   = Math.floor(confirmed.reduce((s,b)=>s+(b.amount||0),0) / 100);
+    document.getElementById('statSaved').textContent    = '₹' + Math.floor(bookings.length * 650).toLocaleString();
+    document.getElementById('statLevel').textContent    = bookings.length >= 5 ? 'Gold' : bookings.length >= 2 ? 'Silver' : 'Bronze';
+
+    /* Load bookings table */
+    loadBookingHistory(user.uid);
+  }
+
+  function loadBookingHistory(uid) {
+    const bookings = window.af.db.getUserBookings(uid);
+    const tbody = document.getElementById('bookingHistoryBody');
+    if (!bookings.length) {
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-4);">
+        <div style="font-size:2rem;margin-bottom:8px;">✈</div>
+        No bookings yet. <a href="results.html" style="color:var(--blue-400)">Search flights →</a>
+      </td></tr>`;
+      return;
+    }
+    tbody.innerHTML = [...bookings].sort((a,b)=>(b.bookedAt||'').localeCompare(a.bookedAt||'')).map(b => `
+      <tr>
+        <td><strong style="font-family:monospace;color:var(--blue-400);">${b.id}</strong></td>
+        <td><strong>${b.from}</strong> <span style="color:var(--blue-400);">→</span> <strong>${b.to}</strong></td>
+        <td style="display:flex;align-items:center;gap:6px;min-width:140px;">
+          <span style="font-size:0.7rem;font-weight:700;color:white;background:var(--blue-600);padding:2px 6px;border-radius:4px;">${b.flightNum?.split('-')[0]}</span>
+          ${b.airline}
+        </td>
+        <td>${b.travelDate ? new Date(b.travelDate).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—'}</td>
+        <td>${b.cls}</td>
+        <td style="font-weight:600;">₹${(b.amount||0).toLocaleString()}</td>
+        <td><span class="booking-status ${b.status}">● ${b.status}</span></td>
+        <td>
+          ${b.status !== 'cancelled' ? `<button class="admin-action-btn btn-delete" onclick="cancelBooking('${b.id}')">Cancel</button>` : '<span style="color:var(--text-5);font-size:0.75rem;">—</span>'}
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function cancelBooking(id) {
+    if (!confirm('Cancel this booking? This cannot be undone.')) return;
+    window.af.db.updateBooking(id, { status: 'cancelled' });
+    showToast('Booking cancelled.', '✅');
+    const user = window.af.currentUser;
+    if (user) loadBookingHistory(user.uid);
+  }
+
+  async function saveProfile() {
+    const user = window.af.currentUser;
+    if (!user) return;
+    const updates = {
+      displayName: document.getElementById('editName').value.trim(),
+      phone:  document.getElementById('editPhone').value.trim(),
+      city:   document.getElementById('editCity').value.trim(),
+      country:document.getElementById('editCountry').value,
+    };
+    if (!updates.displayName) { showToast('Name cannot be empty.', '⚠️'); return; }
+    try {
+      await window.af.auth.updateProfile(updates);
+      loadProfile({ ...user, ...updates });
+      showToast('Profile saved successfully!', '✅');
+    } catch(e) { showToast('Failed to save: ' + e.message, '⚠️'); }
+  }
+
+  async function changePassword() {
+    const current = document.getElementById('currentPwd').value;
+    const newPwd  = document.getElementById('newPwd').value;
+    const confirm = document.getElementById('confirmPwd').value;
+    const msg     = document.getElementById('pwdMsg');
+    const show = (txt, ok) => { msg.style.display='block'; msg.textContent=txt; msg.style.color=ok?'var(--emerald)':'var(--rose)'; };
+
+    if (!current || !newPwd) { show('Please fill in all fields.', false); return; }
+    if (newPwd.length < 6)   { show('New password must be at least 6 characters.', false); return; }
+    if (newPwd !== confirm)   { show('Passwords do not match.', false); return; }
+
+    try {
+      await window.af.auth.updatePassword(current, newPwd);
+      show('Password updated successfully!', true);
+      document.getElementById('currentPwd').value = '';
+      document.getElementById('newPwd').value = '';
+      document.getElementById('confirmPwd').value = '';
+    } catch(e) { show(e.message || 'Failed to update password.', false); }
+  }
+
+  function confirmDeleteAccount() {
+    if (confirm('Are you absolutely sure? This will permanently delete your account and all data. This CANNOT be undone.')) {
+      const uid = window.af.currentUser?.uid;
+      if (uid) window.af.db.deleteUser(uid);
+      window.af.auth.signOut().then(() => {
+        showToast('Account deleted.', '🗑');
+        setTimeout(() => window.location.href = 'index.html', 600);
+      });
+    }
+  }
+
+  function saveSettings() { showToast('Settings saved!', '✅'); }
+
+  function handleAvatarChange(input) {
+    showToast('Avatar upload requires Firebase Storage. Using initials instead.', 'ℹ️');
+    input.value = '';
+  }
+
+  function switchProfileTab(id, el) {
+    document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.profile-tab-content').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('tab-' + id).classList.add('active');
+  }
+
+  function togglePassword(id, btn) {
+    const inp = document.getElementById(id);
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    btn.textContent = inp.type === 'password' ? '👁' : '🙈';
+  }
+</script>
+</body>
+</html>

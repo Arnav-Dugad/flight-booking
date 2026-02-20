@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Results — Arnav Flights</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
+</head>
+<body>
+
+<!-- Page Loader -->
+<div id="pageLoader" class="page-loader">
+  <div class="loader-plane">✈</div>
+  <div class="loader-logo">Arnav <span style="color:var(--blue-400)">Flights</span></div>
+  <div class="loader-bar"><div class="loader-progress"></div></div>
+</div>
+
+<!-- Navigation -->
+<nav class="nav scrolled" id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon">✈</div>
+      Arnav <span>Flights</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="results.html" class="active">Search Flights</a></li>
+      <li><a href="airlines.html">Airlines</a></li>
+      <li><a href="booking.html">My Trips</a></li>
+    </ul>
+    <div class="nav-actions">
+      <div id="navGuest" style="display:flex;align-items:center;gap:8px;">
+        <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
+        <a href="login.html?tab=signup" class="btn btn-primary btn-sm">Sign Up</a>
+      </div>
+      <div id="navUser" style="display:none;align-items:center;gap:8px;">
+        <a href="admin.html" class="btn btn-ghost btn-sm" id="navAdminBtn" style="display:none;font-size:0.8125rem;">⚙ Admin</a>
+        <a href="profile.html" class="nav-avatar" id="navAvatar" data-tooltip="My Profile">AF</a>
+        <button class="btn btn-ghost btn-sm" id="navSignOutBtn">Sign Out</button>
+      </div>
+    </div>
+    <button class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Nav -->
+<div class="mobile-nav" id="mobileNav">
+  <button id="mobileClose" style="position:absolute;top:24px;right:24px;font-size:1.5rem;color:var(--text-3);cursor:pointer;">✕</button>
+  <ul class="mobile-nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="results.html" class="active">Search Flights</a></li>
+    <li><a href="airlines.html">Airlines</a></li>
+    <li><a href="booking.html">My Trips</a></li>
+  </ul>
+  <div id="mobileGuestLinks" style="display:flex;flex-direction:column;gap:8px;padding:0 24px;margin-top:16px;">
+    <a href="login.html" class="btn btn-primary" style="text-align:center;">Sign In</a>
+    <a href="login.html?tab=signup" class="btn btn-ghost" style="text-align:center;">Create Account</a>
+  </div>
+  <div id="mobileUserLinks" style="display:none;flex-direction:column;gap:8px;padding:0 24px;margin-top:16px;">
+    <div id="mobileUserName" style="font-size:0.9375rem;font-weight:600;color:var(--text-0);margin-bottom:4px;padding:0 4px;"></div>
+    <a href="profile.html" class="btn btn-ghost" style="text-align:left;">👤 My Profile</a>
+    <a href="admin.html" class="btn btn-ghost" id="mobileAdminBtn" style="display:none;text-align:left;">⚙ Admin Dashboard</a>
+    <button class="btn btn-ghost" id="mobileSignOut" style="text-align:left;color:var(--red-400,#f87171);">Sign Out</button>
+  </div>
+</div>
+
+<!-- Demo Mode Bar -->
+<div class="demo-mode-bar" id="demoModeBar"></div>
+
+<!-- Search Summary Bar -->
+<div style="background:var(--bg-1);border-bottom:1px solid var(--glass-border);padding-top:calc(var(--nav-height) + 0px);">
+  <div class="container-wide" style="padding-top:16px;padding-bottom:16px;">
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+      <!-- Route summary -->
+      <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:700;font-size:1.125rem;color:var(--text-0);">
+        <span data-search-from>New Delhi</span>
+        <span style="color:var(--blue-400)">✈</span>
+        <span data-search-to>Mumbai</span>
+      </div>
+      <div style="width:1px;height:20px;background:var(--glass-border);"></div>
+      <div style="font-size:0.875rem;color:var(--text-3);" data-search-date>20 Feb 2025</div>
+      <div style="width:1px;height:20px;background:var(--glass-border);"></div>
+      <div style="font-size:0.875rem;color:var(--text-3);" data-search-pax>1 Pax</div>
+      <div style="width:1px;height:20px;background:var(--glass-border);"></div>
+      <div style="font-size:0.875rem;color:var(--text-3);" data-search-class>Economy</div>
+      <a href="index.html" class="btn btn-ghost btn-sm" style="margin-left:auto;">Modify Search</a>
+    </div>
+
+    <!-- Price timeline -->
+    <div style="display:flex;gap:4px;margin-top:16px;overflow-x:auto;padding-bottom:4px;">
+      <div style="font-size:0.75rem;color:var(--text-4);align-self:center;white-space:nowrap;margin-right:8px;">Price trend:</div>
+      <!-- 7-day price trend bars -->
+      <script>
+        const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+        const prices = [4200,3900,3600,3800,4100,4800,5100];
+        const minP = Math.min(...prices);
+        document.write(days.map((d,i) => `
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;min-width:44px;"
+               onclick="showToast('${d}: ₹${prices[i].toLocaleString()}','📅')">
+            <div style="width:32px;height:${Math.round((prices[i]-minP)/500*24)+16}px;
+                        background:${prices[i]===minP?'var(--emerald)':'var(--blue-600)'};
+                        border-radius:4px 4px 2px 2px;opacity:0.7;transition:opacity 0.2s;"
+                 onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'"></div>
+            <div style="font-size:0.625rem;color:var(--text-4);">${d}</div>
+            <div style="font-size:0.6rem;color:${prices[i]===minP?'var(--emerald)':'var(--text-5)'};">₹${Math.round(prices[i]/100)/10}k</div>
+          </div>
+        `).join(''));
+      </script>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="container-wide">
+  <div class="results-layout">
+
+    <!-- Filters Panel -->
+    <aside class="filters-panel">
+
+      <!-- Stops filter -->
+      <div class="filter-section">
+        <h3>Stops <span class="filter-reset" onclick="resetFilters()">Reset</span></h3>
+        <div class="filter-option" onclick="this.querySelector('.checkbox').click()">
+          <div class="filter-option-left">
+            <div class="checkbox stops-filter checked" data-stops="0"></div>
+            <span class="filter-label">Non-stop</span>
+          </div>
+          <span class="filter-count">8</span>
+        </div>
+        <div class="filter-option" onclick="this.querySelector('.checkbox').click()">
+          <div class="filter-option-left">
+            <div class="checkbox stops-filter checked" data-stops="1"></div>
+            <span class="filter-label">1 Stop</span>
+          </div>
+          <span class="filter-count">3</span>
+        </div>
+        <div class="filter-option" onclick="this.querySelector('.checkbox').click()">
+          <div class="filter-option-left">
+            <div class="checkbox stops-filter checked" data-stops="2"></div>
+            <span class="filter-label">2+ Stops</span>
+          </div>
+          <span class="filter-count">1</span>
+        </div>
+      </div>
+
+      <!-- Price Range -->
+      <div class="filter-section">
+        <h3>Max Price</h3>
+        <div class="price-range">
+          <div class="price-range-values">
+            <span>₹0</span>
+            <span id="priceDisplay">₹75,000</span>
+          </div>
+          <input type="range" id="priceRange" min="0" max="75000" value="75000" step="500">
+        </div>
+      </div>
+
+      <!-- Airlines filter -->
+      <div class="filter-section">
+        <h3>Airlines</h3>
+        <div class="filter-option" onclick="this.querySelector('.checkbox').click()">
+          <div class="filter-option-left">
+            <div class="checkbox airline-filter checked" data-airline="AI"></div>
+            <div style="width:22px;height:22px;border-radius:5px;background:linear-gradient(135deg,#C8102E,#FF4444);display:flex;align-items:center;justify-content:center;font-size:0.5rem;font-weight:800;color:white;">AI</div>
+            <span class="filter-label">Air India</span>
+          </div>
+        </div>
+        <div class="filter-option" onclick="this.querySelector('.checkbox').click()">
+          <div class="filter-option-left">
+            <div class="checkbox airline-filter checked" data-airline="IG"></div>
+            <div style="width:22px;height:22px;border-radius:5px;background:linear-gradient(135deg,#1A237E,#3949AB);display:flex;align-items:center;justify-content:center;font-size:0.5rem;font-weight:800;color:white;">6E</div>
+            <span class="filter-label">IndiGo</span>
+          </div>
+        </div>
+        <div class="filter-option" onclick="this.querySelector('.checkbox').click()">
+          <div class="filter-option-left">
+            <div class="checkbox airline-filter checked" data-airline="SG"></div>
+            <div style="width:22px;height:22px;border-radius:5px;background:linear-gradient(135deg,#FF4500,#FF6B35);display:flex;align-items:center;justify-content:center;font-size:0.5rem;font-weight:800;color:white;">SG</div>
+            <span class="filter-label">SpiceJet</span>
+          </div>
+        </div>
+        <div class="filter-option" onclick="this.querySelector('.checkbox').click()">
+          <div class="filter-option-left">
+            <div class="checkbox airline-filter checked" data-airline="EK"></div>
+            <div style="width:22px;height:22px;border-radius:5px;background:linear-gradient(135deg,#C8102E,#D4AF37);display:flex;align-items:center;justify-content:center;font-size:0.5rem;font-weight:800;color:white;">EK</div>
+            <span class="filter-label">Emirates</span>
+          </div>
+        </div>
+        <div class="filter-option" onclick="this.querySelector('.checkbox').click()">
+          <div class="filter-option-left">
+            <div class="checkbox airline-filter checked" data-airline="LH"></div>
+            <div style="width:22px;height:22px;border-radius:5px;background:linear-gradient(135deg,#05164D,#1976D2);display:flex;align-items:center;justify-content:center;font-size:0.5rem;font-weight:800;color:white;">LH</div>
+            <span class="filter-label">Lufthansa</span>
+          </div>
+        </div>
+        <div class="filter-option" onclick="this.querySelector('.checkbox').click()">
+          <div class="filter-option-left">
+            <div class="checkbox airline-filter checked" data-airline="SQ"></div>
+            <div style="width:22px;height:22px;border-radius:5px;background:linear-gradient(135deg,#003DA5,#1565C0);display:flex;align-items:center;justify-content:center;font-size:0.5rem;font-weight:800;color:white;">SQ</div>
+            <span class="filter-label">Singapore Air</span>
+          </div>
+        </div>
+        <div class="filter-option" onclick="this.querySelector('.checkbox').click()">
+          <div class="filter-option-left">
+            <div class="checkbox airline-filter checked" data-airline="QR"></div>
+            <div style="width:22px;height:22px;border-radius:5px;background:linear-gradient(135deg,#5C0632,#8B1A4A);display:flex;align-items:center;justify-content:center;font-size:0.5rem;font-weight:800;color:white;">QR</div>
+            <span class="filter-label">Qatar Airways</span>
+          </div>
+        </div>
+        <div class="filter-option" onclick="this.querySelector('.checkbox').click()">
+          <div class="filter-option-left">
+            <div class="checkbox airline-filter checked" data-airline="BA"></div>
+            <div style="width:22px;height:22px;border-radius:5px;background:linear-gradient(135deg,#2568AE,#CF142B);display:flex;align-items:center;justify-content:center;font-size:0.5rem;font-weight:800;color:white;">BA</div>
+            <span class="filter-label">British Airways</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Departure time -->
+      <div class="filter-section">
+        <h3>Departure Time</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div style="padding:10px;text-align:center;border-radius:var(--radius-md);border:1px solid var(--glass-border);cursor:pointer;transition:all 0.2s;font-size:0.75rem;"
+               class="time-filter-card checked" data-time="morning"
+               onclick="this.classList.toggle('checked');applyFiltersAndSort()"
+               style="">
+            <div style="font-size:1.2rem;">🌅</div>
+            <div style="color:var(--text-2);font-weight:500;">Morning</div>
+            <div style="color:var(--text-4);font-size:0.65rem;">6AM–12PM</div>
+          </div>
+          <div style="padding:10px;text-align:center;border-radius:var(--radius-md);border:1px solid var(--glass-border);cursor:pointer;transition:all 0.2s;font-size:0.75rem;"
+               class="time-filter-card checked" data-time="afternoon"
+               onclick="this.classList.toggle('checked');applyFiltersAndSort()">
+            <div style="font-size:1.2rem;">☀️</div>
+            <div style="color:var(--text-2);font-weight:500;">Afternoon</div>
+            <div style="color:var(--text-4);font-size:0.65rem;">12PM–6PM</div>
+          </div>
+          <div style="padding:10px;text-align:center;border-radius:var(--radius-md);border:1px solid var(--glass-border);cursor:pointer;transition:all 0.2s;font-size:0.75rem;"
+               class="time-filter-card checked" data-time="evening"
+               onclick="this.classList.toggle('checked');applyFiltersAndSort()">
+            <div style="font-size:1.2rem;">🌆</div>
+            <div style="color:var(--text-2);font-weight:500;">Evening</div>
+            <div style="color:var(--text-4);font-size:0.65rem;">6PM–12AM</div>
+          </div>
+          <div style="padding:10px;text-align:center;border-radius:var(--radius-md);border:1px solid var(--glass-border);cursor:pointer;transition:all 0.2s;font-size:0.75rem;"
+               class="time-filter-card checked" data-time="night"
+               onclick="this.classList.toggle('checked');applyFiltersAndSort()">
+            <div style="font-size:1.2rem;">🌙</div>
+            <div style="color:var(--text-2);font-weight:500;">Night</div>
+            <div style="color:var(--text-4);font-size:0.65rem;">12AM–6AM</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Class filter -->
+      <div class="filter-section">
+        <h3>Cabin Class</h3>
+        <div class="filter-option" onclick="this.querySelector('.checkbox').click()">
+          <div class="filter-option-left">
+            <div class="checkbox checked"></div>
+            <span class="filter-label">Economy</span>
+          </div>
+        </div>
+        <div class="filter-option" onclick="this.querySelector('.checkbox').click()">
+          <div class="filter-option-left">
+            <div class="checkbox checked"></div>
+            <span class="filter-label">Business</span>
+          </div>
+        </div>
+        <div class="filter-option" onclick="this.querySelector('.checkbox').click()">
+          <div class="filter-option-left">
+            <div class="checkbox"></div>
+            <span class="filter-label">First Class</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Special fares -->
+      <div class="filter-section">
+        <h3>Special Fares</h3>
+        <div class="filter-option" onclick="this.querySelector('.checkbox').click()">
+          <div class="filter-option-left">
+            <div class="checkbox"></div>
+            <span class="filter-label">Student Fares</span>
+          </div>
+        </div>
+        <div class="filter-option" onclick="this.querySelector('.checkbox').click()">
+          <div class="filter-option-left">
+            <div class="checkbox"></div>
+            <span class="filter-label">Senior Citizen</span>
+          </div>
+        </div>
+        <div class="filter-option" onclick="this.querySelector('.checkbox').click()">
+          <div class="filter-option-left">
+            <div class="checkbox"></div>
+            <span class="filter-label">Armed Forces</span>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- Results -->
+    <main>
+      <!-- Sort bar -->
+      <div class="sort-bar">
+        <div class="results-count">
+          Showing <span data-results-count>12</span> flights
+        </div>
+        <div class="sort-options">
+          <div class="sort-option active" data-sort="price">Cheapest</div>
+          <div class="sort-option" data-sort="duration">Fastest</div>
+          <div class="sort-option" data-sort="departure">Earliest</div>
+          <div class="sort-option" data-sort="arrival">Latest Arr.</div>
+        </div>
+      </div>
+
+      <!-- Promo Banner -->
+      <div style="padding:14px 20px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:var(--radius-md);margin-bottom:16px;display:flex;align-items:center;gap:12px;">
+        <span style="font-size:1.25rem;">🎁</span>
+        <div>
+          <span style="font-size:0.875rem;font-weight:600;color:var(--gold);">Exclusive Deal: </span>
+          <span style="font-size:0.875rem;color:var(--text-2);">Use code <strong style="font-family:monospace;color:var(--gold-light)">ARNAV500</strong> to save ₹500 on bookings above ₹10,000</span>
+        </div>
+        <button class="btn btn-sm" style="margin-left:auto;background:rgba(245,158,11,0.15);color:var(--gold);border:1px solid rgba(245,158,11,0.3);" onclick="showToast('Code copied!','📋')">Copy Code</button>
+      </div>
+
+      <!-- Flight list -->
+      <div id="flightsList">
+        <!-- Skeleton loading -->
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div class="glass-card" style="height:140px;overflow:hidden;position:relative;">
+            <div class="skeleton" style="height:100%;border-radius:inherit;"></div>
+          </div>
+          <div class="glass-card" style="height:140px;overflow:hidden;">
+            <div class="skeleton" style="height:100%;border-radius:inherit;"></div>
+          </div>
+          <div class="glass-card" style="height:140px;overflow:hidden;">
+            <div class="skeleton" style="height:100%;border-radius:inherit;"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding-top:24px;border-top:1px solid var(--glass-border);">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-icon">✈</div>
+        Arnav <span style="color:var(--blue-400)">Flights</span>
+      </a>
+      <div style="font-size:0.8125rem;color:var(--text-5);">© 2024 Arnav Flights. All rights reserved.</div>
+      <div class="footer-bottom-links" style="display:flex;gap:20px;">
+        <a href="#" style="color:var(--text-5);font-size:0.8125rem;">Privacy</a>
+        <a href="#" style="color:var(--text-5);font-size:0.8125rem;">Terms</a>
+        <a href="#" style="color:var(--text-5);font-size:0.8125rem;">Help</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .time-filter-card.checked {
+    background: rgba(59,130,246,0.08);
+    border-color: rgba(59,130,246,0.3) !important;
+    color: var(--blue-400);
+  }
+</style>
+
+<script src="js/main.js"></script>
+<script src="js/search.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/auth.js"></script>
+<script>
+  function resetFilters() {
+    document.querySelectorAll('.checkbox').forEach(c => c.classList.add('checked'));
+    document.getElementById('priceRange').value = 75000;
+    document.getElementById('priceDisplay').textContent = '₹75,000';
+    document.getElementById('priceRange').style.background = '';
+    applyFiltersAndSort();
+    showToast('Filters reset', '🔄');
+  }
+</script>
+</body>
+</html>

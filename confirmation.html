@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Confirmed — Arnav Flights</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
+</head>
+<body>
+
+<!-- Page Loader -->
+<div id="pageLoader" class="page-loader">
+  <div class="loader-plane">✈</div>
+  <div class="loader-logo">Arnav <span style="color:var(--blue-400)">Flights</span></div>
+  <div class="loader-bar"><div class="loader-progress"></div></div>
+</div>
+
+<!-- Navigation -->
+<nav class="nav scrolled" id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon">✈</div>
+      Arnav <span>Flights</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="results.html">Search Flights</a></li>
+      <li><a href="airlines.html">Airlines</a></li>
+      <li><a href="booking.html">My Trips</a></li>
+    </ul>
+    <div class="nav-actions">
+      <div id="navGuest" style="display:flex;align-items:center;gap:8px;">
+        <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
+        <a href="login.html?tab=signup" class="btn btn-primary btn-sm">Sign Up</a>
+      </div>
+      <div id="navUser" style="display:none;align-items:center;gap:8px;">
+        <a href="admin.html" class="btn btn-ghost btn-sm" id="navAdminBtn" style="display:none;font-size:0.8125rem;">⚙ Admin</a>
+        <a href="profile.html" class="nav-avatar" id="navAvatar" data-tooltip="My Profile">AF</a>
+        <button class="btn btn-ghost btn-sm" id="navSignOutBtn">Sign Out</button>
+      </div>
+    </div>
+    <button class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Nav -->
+<div class="mobile-nav" id="mobileNav">
+  <button id="mobileClose" style="position:absolute;top:24px;right:24px;font-size:1.5rem;color:var(--text-3);cursor:pointer;">✕</button>
+  <ul class="mobile-nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="results.html">Search Flights</a></li>
+    <li><a href="airlines.html">Airlines</a></li>
+    <li><a href="booking.html">My Trips</a></li>
+  </ul>
+  <div id="mobileGuestLinks" style="display:flex;flex-direction:column;gap:8px;padding:0 24px;margin-top:16px;">
+    <a href="login.html" class="btn btn-primary" style="text-align:center;">Sign In</a>
+    <a href="login.html?tab=signup" class="btn btn-ghost" style="text-align:center;">Create Account</a>
+  </div>
+  <div id="mobileUserLinks" style="display:none;flex-direction:column;gap:8px;padding:0 24px;margin-top:16px;">
+    <div id="mobileUserName" style="font-size:0.9375rem;font-weight:600;color:var(--text-0);margin-bottom:4px;padding:0 4px;"></div>
+    <a href="profile.html" class="btn btn-ghost" style="text-align:left;">👤 My Profile</a>
+    <a href="admin.html" class="btn btn-ghost" id="mobileAdminBtn" style="display:none;text-align:left;">⚙ Admin Dashboard</a>
+    <button class="btn btn-ghost" id="mobileSignOut" style="text-align:left;color:var(--red-400,#f87171);">Sign Out</button>
+  </div>
+</div>
+
+<!-- Demo Mode Bar -->
+<div class="demo-mode-bar" id="demoModeBar"></div>
+
+<!-- Confirmation Hero -->
+<div class="confirmation-hero">
+  <div class="container">
+
+    <!-- Success icon -->
+    <div class="confirmation-icon">✓</div>
+
+    <!-- Success message -->
+    <div class="badge" style="margin:0 auto 16px;width:fit-content;background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.25);color:var(--emerald);">
+      ✓ Payment Successful
+    </div>
+    <h1 style="font-size:clamp(2rem,5vw,3rem);font-weight:800;letter-spacing:-0.03em;margin-bottom:12px;">
+      Your Trip is <span class="gradient-text">Confirmed!</span>
+    </h1>
+    <p style="font-size:1.0625rem;color:var(--text-3);max-width:50ch;margin:0 auto 48px;line-height:1.65;">
+      Woohoo! Your booking is confirmed and your e-ticket has been sent to your email. Have an amazing journey!
+    </p>
+
+    <!-- Booking Reference Banner -->
+    <div style="max-width:640px;margin:0 auto 24px;padding:20px 28px;background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);border-radius:var(--radius-xl);display:flex;align-items:center;justify-content:space-between;flex-wrap:gap 12px;">
+      <div>
+        <div style="font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-4);margin-bottom:4px;">Booking Reference</div>
+        <div class="booking-ref" id="confRef">AF7XK2Q1</div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-ghost btn-sm" onclick="copyRef()">📋 Copy</button>
+        <button class="btn btn-outline-blue btn-sm" onclick="downloadTicket()">⬇ Download</button>
+      </div>
+    </div>
+
+    <!-- Ticket Card -->
+    <div class="ticket-card">
+
+      <!-- Ticket header -->
+      <div class="ticket-header">
+        <div>
+          <div style="font-size:0.75rem;color:var(--text-4);margin-bottom:2px;">Airline</div>
+          <div style="font-size:1rem;font-weight:600;color:var(--text-0);" id="confAirline">Air India</div>
+          <div style="font-size:0.8125rem;color:var(--text-4);" id="confFlight">AI-301</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:0.75rem;color:var(--text-4);margin-bottom:2px;">Booking Date</div>
+          <div style="font-size:0.875rem;color:var(--text-1);" id="confDate">20 Feb 2025</div>
+          <div style="margin-top:4px;">
+            <!-- QR placeholder -->
+            <div class="qr-placeholder">
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;padding:4px;">
+                <div style="background:#000;border-radius:1px;aspect-ratio:1;"></div>
+                <div style="background:#fff;aspect-ratio:1;"></div>
+                <div style="background:#000;border-radius:1px;aspect-ratio:1;"></div>
+                <div style="background:#fff;aspect-ratio:1;"></div>
+                <div style="background:#000;border-radius:1px;aspect-ratio:1;"></div>
+                <div style="background:#fff;aspect-ratio:1;"></div>
+                <div style="background:#000;border-radius:1px;aspect-ratio:1;"></div>
+                <div style="background:#fff;aspect-ratio:1;"></div>
+                <div style="background:#000;border-radius:1px;aspect-ratio:1;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ticket body -->
+      <div class="ticket-body">
+
+        <!-- Route display -->
+        <div class="ticket-route">
+          <div class="ticket-airport">
+            <div class="ticket-airport-code" id="confFrom">DEL</div>
+            <div class="ticket-airport-city">New Delhi</div>
+          </div>
+          <div class="ticket-line">
+            <div class="ticket-line-plane">✈️</div>
+            <div class="ticket-line-track"></div>
+          </div>
+          <div class="ticket-airport">
+            <div class="ticket-airport-code" id="confTo">BOM</div>
+            <div class="ticket-airport-city">Mumbai</div>
+          </div>
+        </div>
+
+        <!-- Tear line / divider -->
+        <div class="ticket-divider">
+          <div class="ticket-divider-line"></div>
+        </div>
+
+        <!-- Ticket details grid -->
+        <div class="ticket-details-grid">
+          <div class="ticket-detail">
+            <div class="ticket-detail-label">Departure</div>
+            <div class="ticket-detail-value" id="confDep">06:15</div>
+          </div>
+          <div class="ticket-detail">
+            <div class="ticket-detail-label">Arrival</div>
+            <div class="ticket-detail-value" id="confArr">09:30</div>
+          </div>
+          <div class="ticket-detail">
+            <div class="ticket-detail-label">Duration</div>
+            <div class="ticket-detail-value" id="confDuration">2h 15m</div>
+          </div>
+          <div class="ticket-detail">
+            <div class="ticket-detail-label">Class</div>
+            <div class="ticket-detail-value" id="confClass">Economy</div>
+          </div>
+          <div class="ticket-detail">
+            <div class="ticket-detail-label">Seat</div>
+            <div class="ticket-detail-value">6A</div>
+          </div>
+          <div class="ticket-detail">
+            <div class="ticket-detail-label">Terminal</div>
+            <div class="ticket-detail-value">T3</div>
+          </div>
+        </div>
+
+        <!-- Total paid -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:24px;padding-top:16px;border-top:1px dashed var(--glass-border);">
+          <div>
+            <div style="font-size:0.75rem;color:var(--text-4);">Total Paid</div>
+            <div style="font-size:2rem;font-weight:800;color:var(--text-0);font-family:var(--font-display);" id="confTotal">₹5,782</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;margin-bottom:8px;">
+              <span class="flight-tag flight-tag-green">✓ Confirmed</span>
+              <span class="flight-tag flight-tag-gold">Non-stop</span>
+              <span class="flight-tag">Economy</span>
+            </div>
+            <div style="font-size:0.8125rem;color:var(--text-4);">Arnav Flights PNR</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- What's next section -->
+    <div style="max-width:640px;margin:32px auto 0;">
+      <h3 style="font-size:1.125rem;font-weight:600;margin-bottom:20px;color:var(--text-1);">What's Next?</h3>
+      <div style="display:grid;gap:12px;">
+
+        <div style="display:flex;align-items:center;gap:16px;padding:16px 20px;background:var(--glass-2);border:1px solid var(--glass-border);border-radius:var(--radius-md);">
+          <div style="width:40px;height:40px;border-radius:10px;background:rgba(59,130,246,0.1);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;">📧</div>
+          <div>
+            <div style="font-size:0.9375rem;font-weight:500;color:var(--text-0);">Check Your Email</div>
+            <div style="font-size:0.8125rem;color:var(--text-4);">E-ticket and boarding pass sent to your email within 5 minutes.</div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:16px;padding:16px 20px;background:var(--glass-2);border:1px solid var(--glass-border);border-radius:var(--radius-md);">
+          <div style="width:40px;height:40px;border-radius:10px;background:rgba(16,185,129,0.1);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;">📱</div>
+          <div>
+            <div style="font-size:0.9375rem;font-weight:500;color:var(--text-0);">Web Check-In</div>
+            <div style="font-size:0.8125rem;color:var(--text-4);">Opens 48 hours before departure. Check in online to choose seats.</div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:16px;padding:16px 20px;background:var(--glass-2);border:1px solid var(--glass-border);border-radius:var(--radius-md);">
+          <div style="width:40px;height:40px;border-radius:10px;background:rgba(245,158,11,0.1);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;">🛂</div>
+          <div>
+            <div style="font-size:0.9375rem;font-weight:500;color:var(--text-0);">Arrive 2 Hours Early</div>
+            <div style="font-size:0.8125rem;color:var(--text-4);">For domestic flights, arrive at least 2 hours before departure. Bring valid ID.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action buttons -->
+      <div style="display:flex;gap:12px;margin-top:28px;justify-content:center;flex-wrap:wrap;">
+        <a href="index.html" class="btn btn-primary btn-lg">✈ Book Another Flight</a>
+        <button class="btn btn-ghost btn-lg" onclick="showToast('Your trips dashboard is coming soon!','✈')">My Trips</button>
+        <button class="btn btn-ghost btn-lg" onclick="downloadTicket()">⬇ Download PDF</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Cross-sell section -->
+<section style="padding:60px 0;border-top:1px solid var(--glass-border);">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:32px;">
+      <h3 style="font-size:1.5rem;font-weight:700;margin-bottom:8px;">Complete Your Trip</h3>
+      <p style="color:var(--text-3);font-size:0.9375rem;">Add hotels and car rentals to make your journey perfect</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;">
+
+      <div class="glass-card" style="padding:24px;cursor:pointer;" onclick="showToast('Hotel booking coming soon!','🏨')">
+        <div style="font-size:2rem;margin-bottom:16px;">🏨</div>
+        <h4 style="font-size:1rem;font-weight:600;margin-bottom:6px;">Book a Hotel</h4>
+        <p style="font-size:0.8125rem;color:var(--text-3);margin-bottom:16px;">500+ hotels at your destination. Free cancellation available.</p>
+        <div style="font-size:0.875rem;color:var(--blue-400);font-weight:500;">Starting from ₹2,500/night →</div>
+      </div>
+
+      <div class="glass-card" style="padding:24px;cursor:pointer;" onclick="showToast('Car rental coming soon!','🚗')">
+        <div style="font-size:2rem;margin-bottom:16px;">🚗</div>
+        <h4 style="font-size:1rem;font-weight:600;margin-bottom:6px;">Rent a Car</h4>
+        <p style="font-size:0.8125rem;color:var(--text-3);margin-bottom:16px;">Self-drive cars from top brands. Pick up at the airport.</p>
+        <div style="font-size:0.875rem;color:var(--blue-400);font-weight:500;">Starting from ₹800/day →</div>
+      </div>
+
+      <div class="glass-card" style="padding:24px;cursor:pointer;" onclick="showToast('Insurance add-on coming soon!','🛡️')">
+        <div style="font-size:2rem;margin-bottom:16px;">🛡️</div>
+        <h4 style="font-size:1rem;font-weight:600;margin-bottom:6px;">Travel Insurance</h4>
+        <p style="font-size:0.8125rem;color:var(--text-3);margin-bottom:16px;">Comprehensive coverage for medical, trip cancellation, and more.</p>
+        <div style="font-size:0.875rem;color:var(--emerald);font-weight:500;">From ₹499 per person →</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding-top:24px;border-top:1px solid var(--glass-border);">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-icon">✈</div>
+        Arnav <span style="color:var(--blue-400)">Flights</span>
+      </a>
+      <div style="font-size:0.8125rem;color:var(--text-5);">© 2024 Arnav Flights. All rights reserved.</div>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/search.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/auth.js"></script>
+<script>
+  function copyRef() {
+    const ref = document.getElementById('confRef').textContent;
+    navigator.clipboard.writeText(ref).then(() => showToast('Booking reference copied!', '📋'));
+  }
+
+  function downloadTicket() {
+    showToast('Preparing your e-ticket PDF...', '⬇');
+    setTimeout(() => showToast('Ticket download started!', '✅'), 1500);
+  }
+</script>
+</body>
+</html>

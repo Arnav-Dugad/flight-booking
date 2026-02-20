@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arnav Flights — Book Flights Online</title>
+  <meta name="description" content="Book flights from 50+ airlines at the best prices. Arnav Flights — Your premium travel partner.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
+</head>
+<body>
+
+<!-- Page Loader -->
+<div id="pageLoader" class="page-loader">
+  <div class="loader-plane">✈</div>
+  <div class="loader-logo">Arnav <span style="color:var(--blue-400)">Flights</span></div>
+  <div class="loader-bar"><div class="loader-progress"></div></div>
+</div>
+
+<!-- Navigation -->
+<nav class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon">✈</div>
+      Arnav <span>Flights</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="results.html">Search Flights</a></li>
+      <li><a href="airlines.html">Airlines</a></li>
+      <li><a href="booking.html">My Trips</a></li>
+    </ul>
+    <div class="nav-actions">
+      <div id="navGuest" style="display:flex;align-items:center;gap:8px;">
+        <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
+        <a href="login.html?tab=signup" class="btn btn-primary btn-sm">Sign Up</a>
+      </div>
+      <div id="navUser" style="display:none;align-items:center;gap:8px;">
+        <a href="admin.html" class="btn btn-ghost btn-sm" id="navAdminBtn" style="display:none;font-size:0.8125rem;">⚙ Admin</a>
+        <a href="profile.html" class="nav-avatar" id="navAvatar" data-tooltip="My Profile">AF</a>
+        <button class="btn btn-ghost btn-sm" id="navSignOutBtn">Sign Out</button>
+      </div>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Nav -->
+<div class="mobile-nav" id="mobileNav">
+  <button id="mobileClose" style="position:absolute;top:24px;right:24px;font-size:1.5rem;color:var(--text-3);cursor:pointer;">✕</button>
+  <ul class="mobile-nav-links">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="results.html">Search Flights</a></li>
+    <li><a href="airlines.html">Airlines</a></li>
+    <li><a href="booking.html">My Trips</a></li>
+  </ul>
+  <div id="mobileGuestLinks" style="display:flex;flex-direction:column;gap:8px;padding:0 24px;margin-top:16px;">
+    <a href="login.html" class="btn btn-primary" style="text-align:center;">Sign In</a>
+    <a href="login.html?tab=signup" class="btn btn-ghost" style="text-align:center;">Create Account</a>
+  </div>
+  <div id="mobileUserLinks" style="display:none;flex-direction:column;gap:8px;padding:0 24px;margin-top:16px;">
+    <div id="mobileUserName" style="font-size:0.9375rem;font-weight:600;color:var(--text-0);margin-bottom:4px;padding:0 4px;"></div>
+    <a href="profile.html" class="btn btn-ghost" style="text-align:left;">👤 My Profile</a>
+    <a href="admin.html" class="btn btn-ghost" id="mobileAdminBtn" style="display:none;text-align:left;">⚙ Admin Dashboard</a>
+    <button class="btn btn-ghost" id="mobileSignOut" style="text-align:left;color:var(--red-400,#f87171);">Sign Out</button>
+  </div>
+</div>
+
+<!-- Demo Mode Bar -->
+<div class="demo-mode-bar" id="demoModeBar"></div>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <canvas class="stars-canvas" id="starsCanvas"></canvas>
+  <div class="hero-grid"></div>
+
+  <!-- Decorative floating plane -->
+  <div class="hero-plane">✈</div>
+
+  <!-- Floating badges -->
+  <div style="position:absolute;top:25%;left:5%;animation:float-badge 4s ease-in-out infinite;display:none;" class="glass-card" style="padding:10px 16px;display:flex;align-items:center;gap:8px;">
+    <span style="font-size:1.2rem">🏆</span>
+    <div>
+      <div style="font-size:0.75rem;font-weight:600;color:var(--text-0)">Best Travel App</div>
+      <div style="font-size:0.625rem;color:var(--text-4)">2024 Award</div>
+    </div>
+  </div>
+
+  <div class="hero-content">
+    <!-- Eyebrow tag -->
+    <div class="hero-eyebrow">
+      <div class="hero-tag">
+        <span class="hero-tag-dot"></span>
+        50+ Airlines · 200+ Destinations
+      </div>
+    </div>
+
+    <!-- Hero title -->
+    <h1 class="hero-title">
+      Travel the World
+      <span class="line-2 gradient-text">Effortlessly.</span>
+    </h1>
+
+    <p class="hero-sub">
+      Search, compare, and book flights from 50+ airlines worldwide.
+      Premium experience, unbeatable prices — all in one place.
+    </p>
+
+    <!-- Search Widget -->
+    <div class="search-widget">
+      <!-- Trip type tabs -->
+      <div class="search-tabs">
+        <button class="search-tab active" data-type="round-trip" onclick="setTripType('round-trip')">⇄ Round Trip</button>
+        <button class="search-tab" data-type="one-way" onclick="setTripType('one-way')">→ One Way</button>
+        <button class="search-tab" data-type="multi-city" onclick="setTripType('multi-city')">⊞ Multi-City</button>
+      </div>
+
+      <!-- Search row -->
+      <div class="search-row">
+
+        <!-- From -->
+        <div class="search-field" style="position:relative;">
+          <div class="search-field-label">From</div>
+          <input type="text" id="fromInput" placeholder="City or Airport" autocomplete="off">
+          <div class="search-field-sub" id="fromCode">DEL</div>
+          <div class="autocomplete-dropdown" id="fromDropdown"></div>
+        </div>
+
+        <!-- Swap -->
+        <div style="display:flex;align-items:center;padding:0 4px;">
+          <button class="swap-btn" onclick="swapLocations()" aria-label="Swap locations">⇄</button>
+        </div>
+
+        <!-- To -->
+        <div class="search-field" style="position:relative;">
+          <div class="search-field-label">To</div>
+          <input type="text" id="toInput" placeholder="City or Airport" autocomplete="off">
+          <div class="search-field-sub" id="toCode">BOM</div>
+          <div class="autocomplete-dropdown" id="toDropdown"></div>
+        </div>
+
+        <div class="search-divider"></div>
+
+        <!-- Departure date -->
+        <div class="search-field">
+          <div class="search-field-label">Departure</div>
+          <input type="date" id="depDate" data-offset="1">
+          <div class="search-field-sub">Outbound flight</div>
+        </div>
+
+        <div class="search-divider" id="returnDivider"></div>
+
+        <!-- Return date -->
+        <div class="search-field" id="returnDateField">
+          <div class="search-field-label">Return</div>
+          <input type="date" id="retDate" data-offset="8">
+          <div class="search-field-sub">Return flight</div>
+        </div>
+
+        <div class="search-divider"></div>
+
+        <!-- Passengers -->
+        <div class="search-field" style="position:relative;cursor:pointer;" id="paxTrigger">
+          <div class="search-field-label">Passengers</div>
+          <div style="font-size:0.9375rem;font-weight:500;color:var(--text-0)" data-pax-summary>1 Passenger</div>
+          <div class="search-field-sub">
+            <select id="classSelect" onclick="event.stopPropagation()" style="background:transparent;border:none;outline:none;color:var(--text-4);font-size:0.75rem;cursor:pointer;">
+              <option value="economy">Economy</option>
+              <option value="premium-economy">Premium Eco</option>
+              <option value="business">Business</option>
+              <option value="first">First Class</option>
+            </select>
+          </div>
+
+          <!-- Passenger dropdown -->
+          <div class="autocomplete-dropdown" id="paxDropdown" style="width:260px;">
+            <div style="padding:16px;">
+              <div style="margin-bottom:16px;">
+                <div class="passenger-control" data-pax="adults" data-min="1" data-max="9">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                    <div>
+                      <div style="font-size:0.875rem;font-weight:500;color:var(--text-1)">Adults</div>
+                      <div style="font-size:0.75rem;color:var(--text-4)">12+ years</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:12px;">
+                      <button class="passenger-dec btn btn-ghost btn-sm" style="width:28px;height:28px;padding:0;border-radius:50%;">−</button>
+                      <span class="passenger-val" style="font-weight:600;color:var(--text-0);min-width:16px;text-align:center;">1</span>
+                      <button class="passenger-inc btn btn-ghost btn-sm" style="width:28px;height:28px;padding:0;border-radius:50%;">+</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div style="margin-bottom:16px;">
+                <div class="passenger-control" data-pax="children" data-min="0" data-max="6">
+                  <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <div>
+                      <div style="font-size:0.875rem;font-weight:500;color:var(--text-1)">Children</div>
+                      <div style="font-size:0.75rem;color:var(--text-4)">2–11 years</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:12px;">
+                      <button class="passenger-dec btn btn-ghost btn-sm" style="width:28px;height:28px;padding:0;border-radius:50%;">−</button>
+                      <span class="passenger-val" style="font-weight:600;color:var(--text-0);min-width:16px;text-align:center;">0</span>
+                      <button class="passenger-inc btn btn-ghost btn-sm" style="width:28px;height:28px;padding:0;border-radius:50%;">+</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="passenger-control" data-pax="infants" data-min="0" data-max="4">
+                  <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <div>
+                      <div style="font-size:0.875rem;font-weight:500;color:var(--text-1)">Infants</div>
+                      <div style="font-size:0.75rem;color:var(--text-4)">Under 2 years</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:12px;">
+                      <button class="passenger-dec btn btn-ghost btn-sm" style="width:28px;height:28px;padding:0;border-radius:50%;">−</button>
+                      <span class="passenger-val" style="font-weight:600;color:var(--text-0);min-width:16px;text-align:center;">0</span>
+                      <button class="passenger-inc btn btn-ghost btn-sm" style="width:28px;height:28px;padding:0;border-radius:50%;">+</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button class="btn btn-primary" style="width:100%;margin-top:16px;" onclick="document.getElementById('paxDropdown').classList.remove('open')">Done</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Search action row -->
+      <div class="search-btn-row">
+        <div class="search-extras">
+          <span class="search-extra-tag">🎯 Best Price Guarantee</span>
+          <span class="search-extra-tag">🔒 Secure Booking</span>
+          <span class="search-extra-tag">📱 Instant Confirmation</span>
+        </div>
+        <button class="btn btn-gold btn-lg btn-search-pulse" onclick="saveAndSearch()">
+          <span>Search Flights</span>
+          <span>✈</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-value"><span data-count="50" data-suffix="+">50+</span></div>
+        <div class="stat-label">Partner Airlines</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-value"><span data-count="200" data-suffix="+">200+</span></div>
+        <div class="stat-label">Destinations</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-value"><span data-count="4.8" data-suffix="★">4.8★</span></div>
+        <div class="stat-label">Average Rating</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-value"><span data-count="2.5" data-suffix="M+">2.5M+</span></div>
+        <div class="stat-label">Happy Travellers</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="scroll-indicator">
+    <div class="scroll-indicator-text">Scroll</div>
+    <div class="scroll-indicator-line"></div>
+  </div>
+</section>
+
+<!-- Airlines Marquee Strip -->
+<section class="airlines-strip">
+  <div class="airlines-strip-label">Trusted Partner Airlines</div>
+  <div class="marquee-track">
+    <!-- First set -->
+    <div class="airline-logo-item"><div class="airline-badge ai-color">AI</div><span class="airline-name">Air India</span></div>
+    <div class="airline-logo-item"><div class="airline-badge ig-color">6E</div><span class="airline-name">IndiGo</span></div>
+    <div class="airline-logo-item"><div class="airline-badge sg-color">SG</div><span class="airline-name">SpiceJet</span></div>
+    <div class="airline-logo-item"><div class="airline-badge ek-color">EK</div><span class="airline-name">Emirates</span></div>
+    <div class="airline-logo-item"><div class="airline-badge lh-color">LH</div><span class="airline-name">Lufthansa</span></div>
+    <div class="airline-logo-item"><div class="airline-badge sq-color">SQ</div><span class="airline-name">Singapore Airlines</span></div>
+    <div class="airline-logo-item"><div class="airline-badge ba-color">BA</div><span class="airline-name">British Airways</span></div>
+    <div class="airline-logo-item"><div class="airline-badge qr-color">QR</div><span class="airline-name">Qatar Airways</span></div>
+    <div class="airline-logo-item"><div class="airline-badge aa-color">AA</div><span class="airline-name">American Airlines</span></div>
+    <div class="airline-logo-item"><div class="airline-badge ua-color">UA</div><span class="airline-name">United Airlines</span></div>
+    <!-- Duplicate for infinite effect -->
+    <div class="airline-logo-item"><div class="airline-badge ai-color">AI</div><span class="airline-name">Air India</span></div>
+    <div class="airline-logo-item"><div class="airline-badge ig-color">6E</div><span class="airline-name">IndiGo</span></div>
+    <div class="airline-logo-item"><div class="airline-badge sg-color">SG</div><span class="airline-name">SpiceJet</span></div>
+    <div class="airline-logo-item"><div class="airline-badge ek-color">EK</div><span class="airline-name">Emirates</span></div>
+    <div class="airline-logo-item"><div class="airline-badge lh-color">LH</div><span class="airline-name">Lufthansa</span></div>
+    <div class="airline-logo-item"><div class="airline-badge sq-color">SQ</div><span class="airline-name">Singapore Airlines</span></div>
+    <div class="airline-logo-item"><div class="airline-badge ba-color">BA</div><span class="airline-name">British Airways</span></div>
+    <div class="airline-logo-item"><div class="airline-badge qr-color">QR</div><span class="airline-name">Qatar Airways</span></div>
+    <div class="airline-logo-item"><div class="airline-badge aa-color">AA</div><span class="airline-name">American Airlines</span></div>
+    <div class="airline-logo-item"><div class="airline-badge ua-color">UA</div><span class="airline-name">United Airlines</span></div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="section">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-label">Why Choose Us</div>
+      <h2>Travel, <span class="gradient-text">Redefined</span></h2>
+      <p>Every detail crafted for the modern traveller. From search to boarding, we've got you covered.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon">💸</div>
+        <h3>Best Price Guarantee</h3>
+        <p>We compare prices across 50+ airlines in real-time. If you find a cheaper fare elsewhere, we'll match it — guaranteed.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon">⚡</div>
+        <h3>Instant Booking</h3>
+        <p>Lightning-fast booking engine confirms your reservation in seconds. Receive your e-ticket instantly on your email and app.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-icon">🔄</div>
+        <h3>Free Cancellation</h3>
+        <p>Plans change. We get it. Cancel or reschedule most bookings for free up to 24 hours before departure with zero hassle.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-4">
+        <div class="feature-icon">🛡️</div>
+        <h3>Secure & Encrypted</h3>
+        <p>Your data and payment information are protected with military-grade 256-bit SSL encryption on every transaction.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">🎯</div>
+        <h3>AI-Powered Search</h3>
+        <p>Our intelligent algorithm finds the best routes, hidden deals, and flexible dates that save you the most money.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">🌍</div>
+        <h3>200+ Destinations</h3>
+        <p>From local getaways to global adventures — we connect you to 200+ destinations across 6 continents, 24/7.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Destinations Section -->
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-label">Popular Destinations</div>
+      <h2>Where to Next, <span class="gradient-text-gold">Explorer?</span></h2>
+      <p>Handpicked destinations with the best deals this season. Tap to search instantly.</p>
+    </div>
+
+    <div class="destinations-grid reveal">
+      <!-- Dubai — large card -->
+      <div class="dest-card dest-dubai" onclick="quickSearch('Dubai')">
+        <div class="dest-card-gradient"></div>
+        <div class="dest-card-content">
+          <div class="dest-city">Dubai</div>
+          <div class="dest-country">United Arab Emirates</div>
+          <div class="dest-price">✈ From ₹14,500</div>
+        </div>
+      </div>
+
+      <!-- Paris -->
+      <div class="dest-card dest-paris" onclick="quickSearch('Paris')">
+        <div class="dest-card-gradient"></div>
+        <div class="dest-card-content">
+          <div class="dest-city">Paris</div>
+          <div class="dest-country">France</div>
+          <div class="dest-price">✈ From ₹48,000</div>
+        </div>
+      </div>
+
+      <!-- Tokyo -->
+      <div class="dest-card dest-tokyo" onclick="quickSearch('Tokyo')">
+        <div class="dest-card-gradient"></div>
+        <div class="dest-card-content">
+          <div class="dest-city">Tokyo</div>
+          <div class="dest-country">Japan</div>
+          <div class="dest-price">✈ From ₹35,000</div>
+        </div>
+      </div>
+
+      <!-- Bali -->
+      <div class="dest-card dest-bali" onclick="quickSearch('Bali')">
+        <div class="dest-card-gradient"></div>
+        <div class="dest-card-content">
+          <div class="dest-city">Bali</div>
+          <div class="dest-country">Indonesia</div>
+          <div class="dest-price">✈ From ₹22,000</div>
+        </div>
+      </div>
+
+      <!-- New York -->
+      <div class="dest-card dest-ny" onclick="quickSearch('New York')">
+        <div class="dest-card-gradient"></div>
+        <div class="dest-card-content">
+          <div class="dest-city">New York</div>
+          <div class="dest-country">United States</div>
+          <div class="dest-price">✈ From ₹55,000</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Trust Section -->
+<section class="section" style="background:var(--bg-1);padding:80px 0;">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;">
+      <!-- Left: Text -->
+      <div class="reveal">
+        <div class="section-label">Trusted By Millions</div>
+        <h2 style="font-size:clamp(1.75rem,3.5vw,2.5rem);font-weight:700;letter-spacing:-0.02em;margin-bottom:20px;">
+          The Only Travel Platform <br><span class="gradient-text">You'll Ever Need</span>
+        </h2>
+        <p style="color:var(--text-3);line-height:1.75;margin-bottom:32px;">
+          From solo backpackers to Fortune 500 corporate travel — Arnav Flights powers journeys for millions of travellers worldwide. Join the revolution in modern travel.
+        </p>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;">
+          <a href="results.html" class="btn btn-primary btn-lg">Book Now →</a>
+          <a href="airlines.html" class="btn btn-ghost btn-lg">View Airlines</a>
+        </div>
+      </div>
+
+      <!-- Right: Stats grid -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;" class="reveal">
+        <div class="glass-card" style="padding:28px;text-align:center;">
+          <div style="font-size:2.25rem;font-weight:800;color:var(--text-0);font-family:var(--font-display);">
+            <span data-count="99" data-suffix="%">99%</span>
+          </div>
+          <div style="font-size:0.875rem;color:var(--text-4);margin-top:6px;">On-Time Performance</div>
+        </div>
+        <div class="glass-card" style="padding:28px;text-align:center;background:rgba(59,130,246,0.06);border-color:rgba(59,130,246,0.15);">
+          <div style="font-size:2.25rem;font-weight:800;color:var(--blue-400);font-family:var(--font-display);">
+            <span data-count="24" data-suffix="/7">24/7</span>
+          </div>
+          <div style="font-size:0.875rem;color:var(--text-4);margin-top:6px;">Customer Support</div>
+        </div>
+        <div class="glass-card" style="padding:28px;text-align:center;background:rgba(245,158,11,0.04);border-color:rgba(245,158,11,0.1);">
+          <div style="font-size:2.25rem;font-weight:800;color:var(--gold);font-family:var(--font-display);">
+            <span data-count="40" data-suffix="%">40%</span>
+          </div>
+          <div style="font-size:0.875rem;color:var(--text-4);margin-top:6px;">Avg. Savings</div>
+        </div>
+        <div class="glass-card" style="padding:28px;text-align:center;">
+          <div style="font-size:2.25rem;font-weight:800;color:var(--emerald);font-family:var(--font-display);">
+            <span data-count="5" data-suffix="★">5★</span>
+          </div>
+          <div style="font-size:0.875rem;color:var(--text-4);margin-top:6px;">Customer Reviews</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="section">
+  <div class="container">
+    <div class="section-header reveal" style="text-align:center;max-width:600px;margin:0 auto 56px;">
+      <div class="section-label">Testimonials</div>
+      <h2>Travellers Love <span class="gradient-text">Arnav Flights</span></h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;" class="reveal">
+
+      <div class="glass-card" style="padding:28px;">
+        <div style="display:flex;gap:2px;margin-bottom:16px;">⭐⭐⭐⭐⭐</div>
+        <p style="font-size:0.9375rem;color:var(--text-2);line-height:1.7;margin-bottom:20px;">
+          "Booked my Dubai trip in under 2 minutes. The price was ₹4,000 cheaper than any other site. Absolutely incredible!"
+        </p>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--gradient-blue);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.875rem;">R</div>
+          <div>
+            <div style="font-size:0.875rem;font-weight:600;color:var(--text-0)">Rahul Mehta</div>
+            <div style="font-size:0.75rem;color:var(--text-4)">Mumbai → Dubai</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card" style="padding:28px;background:rgba(59,130,246,0.04);border-color:rgba(59,130,246,0.15);">
+        <div style="display:flex;gap:2px;margin-bottom:16px;">⭐⭐⭐⭐⭐</div>
+        <p style="font-size:0.9375rem;color:var(--text-2);line-height:1.7;margin-bottom:20px;">
+          "The seat selection feature is a game changer. Picked the perfect window seat for my 10-hour flight. Stress-free!"
+        </p>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--gradient-gold);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.875rem;">P</div>
+          <div>
+            <div style="font-size:0.875rem;font-weight:600;color:var(--text-0)">Priya Sharma</div>
+            <div style="font-size:0.75rem;color:var(--text-4)">Delhi → Singapore</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card" style="padding:28px;">
+        <div style="display:flex;gap:2px;margin-bottom:16px;">⭐⭐⭐⭐⭐</div>
+        <p style="font-size:0.9375rem;color:var(--text-2);line-height:1.7;margin-bottom:20px;">
+          "Support team helped me rebook instantly when my flight was cancelled. 10/10 would recommend Arnav Flights to everyone."
+        </p>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#8B5CF6,#6D28D9);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.875rem;">A</div>
+          <div>
+            <div style="font-size:0.875rem;font-weight:600;color:var(--text-0)">Aditya Kumar</div>
+            <div style="font-size:0.75rem;color:var(--text-4)">Bengaluru → London</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CTA Banner -->
+<section style="padding:80px 0;background:linear-gradient(135deg,rgba(29,78,216,0.15) 0%,rgba(37,99,235,0.05) 50%,rgba(245,158,11,0.08) 100%);border-top:1px solid var(--glass-border);border-bottom:1px solid var(--glass-border);">
+  <div class="container" style="text-align:center;">
+    <div class="reveal">
+      <div class="badge badge-gold" style="margin-bottom:20px;">✈ Limited Time Offer</div>
+      <h2 style="font-size:clamp(2rem,4vw,3rem);font-weight:800;letter-spacing:-0.02em;margin-bottom:16px;">
+        Get <span class="gradient-text-gold">₹2,000 Off</span> Your First Booking
+      </h2>
+      <p style="color:var(--text-3);font-size:1.0625rem;margin-bottom:32px;max-width:50ch;margin-left:auto;margin-right:auto;">
+        Sign up today and use code <strong style="color:var(--gold);font-family:monospace;">ARNAV2000</strong> at checkout for an instant discount on your first flight.
+      </p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn btn-gold btn-xl" onclick="showToast('Sign up to claim your offer!', '🎁')">Claim Offer Now</button>
+        <button class="btn btn-ghost btn-xl" onclick="window.location.href='results.html'">Browse Flights</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="nav-logo" style="margin-bottom:0;">
+          <div class="nav-logo-icon">✈</div>
+          Arnav <span style="color:var(--blue-400)">Flights</span>
+        </a>
+        <p>Your premium flight booking platform. Connecting millions of travellers to 200+ destinations worldwide with the best prices guaranteed.</p>
+        <div class="footer-social">
+          <button class="social-btn">𝕏</button>
+          <button class="social-btn">in</button>
+          <button class="social-btn">📘</button>
+          <button class="social-btn">📸</button>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul class="footer-links">
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul class="footer-links">
+          <li><a href="results.html">Search Flights</a></li>
+          <li><a href="airlines.html">Airlines</a></li>
+          <li><a href="#">Hotels</a></li>
+          <li><a href="#">Travel Insurance</a></li>
+          <li><a href="#">Corporate Travel</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul class="footer-links">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Cancellations</a></li>
+          <li><a href="#">Refunds</a></li>
+          <li><a href="#">Manage Booking</a></li>
+          <li><a href="#">Baggage Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2024 Arnav Flights. All rights reserved.</div>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Cookie Policy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/search.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/auth.js"></script>
+<script>
+  function quickSearch(city) {
+    document.getElementById('toInput').value = city;
+    document.getElementById('toCode').textContent = '';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => document.getElementById('fromInput').focus(), 500);
+  }
+</script>
+</body>
+</html>

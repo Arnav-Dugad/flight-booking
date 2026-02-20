@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Arnav Flights</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+</head>
+<body>
+
+<!-- Page Loader -->
+<div id="pageLoader" class="page-loader">
+  <div class="loader-plane">⚙</div>
+  <div class="loader-logo">Admin <span style="color:var(--gold)">Dashboard</span></div>
+  <div class="loader-bar"><div class="loader-progress"></div></div>
+</div>
+
+<div class="admin-layout">
+
+  <!-- ── Sidebar ─────────────────────────────────────────────────── -->
+  <aside class="admin-sidebar" id="adminSidebar">
+
+    <a href="index.html" class="admin-sidebar-logo">
+      <div class="admin-sidebar-logo-icon">✈</div>
+      <div>
+        <div class="admin-sidebar-logo-text">Arnav <span>Flights</span></div>
+        <span class="admin-sidebar-badge">Admin Dashboard</span>
+      </div>
+    </a>
+
+    <nav class="admin-nav">
+      <div class="admin-nav-label">Main</div>
+      <button class="admin-nav-link active" onclick="showSection('overview', this)">
+        <span class="admin-nav-icon">📊</span> Overview
+      </button>
+      <button class="admin-nav-link" onclick="showSection('flights', this)">
+        <span class="admin-nav-icon">✈</span> Flights
+        <span class="admin-nav-badge" id="navFlightCount">12</span>
+      </button>
+      <button class="admin-nav-link" onclick="showSection('users', this)">
+        <span class="admin-nav-icon">👥</span> Users
+        <span class="admin-nav-badge" id="navUserCount">4</span>
+      </button>
+      <button class="admin-nav-link" onclick="showSection('bookings', this)">
+        <span class="admin-nav-icon">🎫</span> Bookings
+        <span class="admin-nav-badge" id="navBookingCount">7</span>
+      </button>
+
+      <div class="admin-nav-label" style="margin-top:12px;">Settings</div>
+      <button class="admin-nav-link" onclick="showSection('settings', this)">
+        <span class="admin-nav-icon">⚙️</span> Site Settings
+      </button>
+      <a href="index.html" class="admin-nav-link">
+        <span class="admin-nav-icon">🌐</span> View Site
+      </a>
+    </nav>
+
+    <div class="admin-sidebar-footer">
+      <div class="admin-user-info">
+        <div class="admin-user-avatar" id="sidebarAvatar">A</div>
+        <div>
+          <div class="admin-user-name" id="sidebarName">Admin</div>
+          <div class="admin-user-role">Super Administrator</div>
+        </div>
+      </div>
+      <button class="admin-nav-link" style="color:var(--rose);" onclick="window.__afSignOut && window.__afSignOut()">
+        <span class="admin-nav-icon">🚪</span> Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- Mobile sidebar toggle -->
+  <button class="admin-menu-toggle" id="adminMenuToggle" onclick="document.getElementById('adminSidebar').classList.toggle('open')">☰</button>
+
+  <!-- ── Main Content ─────────────────────────────────────────────── -->
+  <main class="admin-main">
+
+    <!-- Top bar -->
+    <div class="admin-topbar">
+      <div class="admin-breadcrumb">
+        <span>Arnav Flights</span>
+        <span class="admin-breadcrumb-sep">/</span>
+        <span class="admin-breadcrumb-current" id="breadcrumbCurrent">Overview</span>
+      </div>
+      <div class="admin-topbar-actions">
+        <div style="font-size:0.75rem;color:var(--text-4);display:flex;align-items:center;gap:6px;">
+          <span style="width:8px;height:8px;background:var(--emerald);border-radius:50%;display:inline-block;animation:pulse-dot 2s ease-in-out infinite;"></span>
+          <span id="modeLabel">Demo Mode</span>
+        </div>
+        <a href="profile.html" class="btn btn-ghost btn-sm">My Profile</a>
+        <button class="btn btn-sm" style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2);color:var(--gold);" onclick="refreshData()">↺ Refresh</button>
+      </div>
+    </div>
+
+    <div class="admin-content">
+
+      <!-- ══════════════════════════════════════════════════════════
+           SECTION: OVERVIEW
+           ══════════════════════════════════════════════════════════ -->
+      <div class="admin-section active" id="section-overview">
+        <div style="margin-bottom:24px;">
+          <h1 style="font-size:1.5rem;font-weight:700;color:var(--text-0);margin-bottom:4px;">Dashboard Overview</h1>
+          <p style="color:var(--text-4);font-size:0.875rem;">Welcome back, <span id="overviewAdminName">Admin</span>. Here's what's happening today.</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-icon">👥</div>
+            <div class="stat-card-value" id="statTotalUsers">—</div>
+            <div class="stat-card-label">Total Users</div>
+            <div class="stat-card-sub" id="statActiveUsers">— Active</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon">🎫</div>
+            <div class="stat-card-value" id="statTotalBookings">—</div>
+            <div class="stat-card-label">Total Bookings</div>
+            <div class="stat-card-sub warn" id="statPendingBookings">— Pending</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon">💰</div>
+            <div class="stat-card-value revenue-display" id="statRevenue">—</div>
+            <div class="stat-card-label">Total Revenue</div>
+            <div class="stat-card-sub" id="statConfirmedRevenue">— Confirmed</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon">✈</div>
+            <div class="stat-card-value" id="statActiveFlights">—</div>
+            <div class="stat-card-label">Active Flights</div>
+            <div class="stat-card-sub warn" id="statInactiveFlights">— Inactive</div>
+          </div>
+        </div>
+
+        <!-- Charts row -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;">
+
+          <!-- Booking status chart -->
+          <div class="glass-card" style="padding:24px;">
+            <div style="font-size:0.9375rem;font-weight:600;color:var(--text-0);margin-bottom:20px;">Booking Status</div>
+            <div style="display:flex;flex-direction:column;gap:12px;" id="bookingStatusChart">
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:0.8125rem;margin-bottom:5px;">
+                  <span style="color:var(--emerald);">● Confirmed</span><span id="confPct" style="color:var(--text-0);font-weight:600;">0%</span>
+                </div>
+                <div style="height:6px;background:var(--bg-3);border-radius:3px;overflow:hidden;">
+                  <div id="confBar" style="height:100%;background:var(--emerald);border-radius:3px;width:0%;transition:width 1s ease;"></div>
+                </div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:0.8125rem;margin-bottom:5px;">
+                  <span style="color:var(--gold);">● Pending</span><span id="pendPct" style="color:var(--text-0);font-weight:600;">0%</span>
+                </div>
+                <div style="height:6px;background:var(--bg-3);border-radius:3px;overflow:hidden;">
+                  <div id="pendBar" style="height:100%;background:var(--gold);border-radius:3px;width:0%;transition:width 1s ease;"></div>
+                </div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:0.8125rem;margin-bottom:5px;">
+                  <span style="color:var(--rose);">● Cancelled</span><span id="cancPct" style="color:var(--text-0);font-weight:600;">0%</span>
+                </div>
+                <div style="height:6px;background:var(--bg-3);border-radius:3px;overflow:hidden;">
+                  <div id="cancBar" style="height:100%;background:var(--rose);border-radius:3px;width:0%;transition:width 1s ease;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Revenue by airline -->
+          <div class="glass-card" style="padding:24px;">
+            <div style="font-size:0.9375rem;font-weight:600;color:var(--text-0);margin-bottom:20px;">Revenue by Airline</div>
+            <div class="mini-chart" id="airlineChart"></div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;" id="airlineLegend"></div>
+          </div>
+
+        </div>
+
+        <!-- Recent Bookings -->
+        <div class="admin-table-wrap">
+          <div class="admin-table-header">
+            <div class="admin-table-title">🕐 Recent Bookings</div>
+            <button class="btn btn-ghost btn-sm" onclick="showSection('bookings', document.querySelector('[onclick*=bookings]'))">View All →</button>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="admin-table" id="recentBookingsTable">
+              <thead>
+                <tr>
+                  <th>ID</th><th>Passenger</th><th>Route</th><th>Airline</th><th>Amount</th><th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="recentBookingsBody">
+                <tr><td colspan="6" style="text-align:center;color:var(--text-4);padding:24px;">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════════
+           SECTION: FLIGHTS
+           ══════════════════════════════════════════════════════════ -->
+      <div class="admin-section" id="section-flights">
+        <div class="admin-table-wrap">
+          <div class="admin-table-header">
+            <div class="admin-table-title">✈ Flight Management</div>
+            <div class="admin-table-actions">
+              <input type="text" class="admin-search-input" placeholder="Search flights..." oninput="filterTable(this,'flightsBody')">
+              <button class="btn btn-primary btn-sm" onclick="openFlightModal()">+ Add Flight</button>
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>ID</th><th>Airline</th><th>Flight No.</th><th>Route</th>
+                  <th>Dep / Arr</th><th>Price</th><th>Class</th><th>Status</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="flightsBody">
+                <tr><td colspan="9" style="text-align:center;color:var(--text-4);padding:24px;">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════════
+           SECTION: USERS
+           ══════════════════════════════════════════════════════════ -->
+      <div class="admin-section" id="section-users">
+        <div class="admin-table-wrap">
+          <div class="admin-table-header">
+            <div class="admin-table-title">👥 User Management</div>
+            <div class="admin-table-actions">
+              <input type="text" class="admin-search-input" placeholder="Search users..." oninput="filterTable(this,'usersBody')">
+              <select class="admin-search-input" style="width:130px;" onchange="filterUsersByStatus(this.value)">
+                <option value="">All Status</option>
+                <option value="active">Active</option>
+                <option value="suspended">Suspended</option>
+              </select>
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>User</th><th>Email</th><th>Phone</th><th>City</th>
+                  <th>Joined</th><th>Bookings</th><th>Status</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="usersBody">
+                <tr><td colspan="8" style="text-align:center;color:var(--text-4);padding:24px;">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════════
+           SECTION: BOOKINGS
+           ══════════════════════════════════════════════════════════ -->
+      <div class="admin-section" id="section-bookings">
+        <div class="admin-table-wrap">
+          <div class="admin-table-header">
+            <div class="admin-table-title">🎫 Booking Management</div>
+            <div class="admin-table-actions">
+              <input type="text" class="admin-search-input" placeholder="Search bookings..." oninput="filterTable(this,'allBookingsBody')">
+              <select class="admin-search-input" style="width:130px;" onchange="filterBookingsByStatus(this.value)">
+                <option value="">All Status</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="pending">Pending</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Booking ID</th><th>Passenger</th><th>Route</th><th>Flight</th>
+                  <th>Travel Date</th><th>Class</th><th>Amount</th><th>Status</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="allBookingsBody">
+                <tr><td colspan="9" style="text-align:center;color:var(--text-4);padding:24px;">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════════
+           SECTION: SETTINGS
+           ══════════════════════════════════════════════════════════ -->
+      <div class="admin-section" id="section-settings">
+        <div style="max-width:600px;display:flex;flex-direction:column;gap:20px;">
+
+          <div class="glass-card" style="padding:28px;">
+            <h3 style="font-size:1rem;font-weight:600;margin-bottom:20px;color:var(--text-0);">🌐 Site Configuration</h3>
+            <div style="display:flex;flex-direction:column;gap:14px;">
+              <div class="form-group">
+                <label class="form-label">Site Name</label>
+                <input type="text" class="form-input" value="Arnav Flights">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Support Email</label>
+                <input type="email" class="form-input" value="support@arnavflights.com">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Booking Commission (%)</label>
+                <input type="number" class="form-input" value="3.5" min="0" max="20" step="0.5">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Default Currency</label>
+                <select class="form-select">
+                  <option selected>INR — Indian Rupee</option>
+                  <option>USD — US Dollar</option>
+                  <option>EUR — Euro</option>
+                </select>
+              </div>
+              <button class="btn btn-primary" onclick="showToast('Settings saved!','✅')">Save Configuration</button>
+            </div>
+          </div>
+
+          <div class="glass-card" style="padding:28px;">
+            <h3 style="font-size:1rem;font-weight:600;margin-bottom:20px;color:var(--text-0);">🔑 Firebase Setup</h3>
+            <p style="font-size:0.875rem;color:var(--text-3);margin-bottom:16px;line-height:1.65;">
+              Currently running in <strong style="color:var(--gold);">Demo Mode</strong> (localStorage). To enable real cloud sync, replace the config in <code style="background:var(--bg-2);padding:2px 6px;border-radius:4px;font-size:0.8125rem;color:var(--blue-400);">js/firebase-config.js</code> with your Firebase project credentials.
+            </p>
+            <div style="padding:14px;background:var(--bg-2);border-radius:var(--radius-md);font-family:monospace;font-size:0.75rem;color:var(--text-2);white-space:pre;overflow-x:auto;">const FIREBASE_CONFIG = {
+  apiKey:         "YOUR_API_KEY",
+  authDomain:     "your-app.firebaseapp.com",
+  projectId:      "your-project-id",
+  storageBucket:  "your-app.appspot.com",
+  messagingSenderId: "YOUR_ID",
+  appId:          "YOUR_APP_ID"
+};</div>
+            <a href="https://console.firebase.google.com" target="_blank" class="btn btn-gold btn-sm" style="margin-top:14px;">Open Firebase Console →</a>
+          </div>
+
+          <div class="glass-card" style="padding:28px;border-color:rgba(244,63,94,0.2);">
+            <h3 style="font-size:1rem;font-weight:600;margin-bottom:16px;color:var(--rose);">⚠️ Danger Zone</h3>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <button class="btn btn-sm" style="background:rgba(244,63,94,0.08);border:1px solid rgba(244,63,94,0.25);color:var(--rose);width:fit-content;"
+                onclick="if(confirm('Reset ALL demo data? This cannot be undone.')) resetDemoData()">
+                🗑 Reset Demo Data
+              </button>
+              <div style="font-size:0.75rem;color:var(--text-5);">Clears all localStorage data and re-seeds with default values.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- ── Flight Modal ─────────────────────────────────────────────── -->
+<div class="admin-modal-overlay" id="flightModal">
+  <div class="admin-modal">
+    <div class="admin-modal-header">
+      <div class="admin-modal-title" id="flightModalTitle">✈ Add New Flight</div>
+      <button class="admin-modal-close" onclick="closeModal('flightModal')">✕</button>
+    </div>
+    <div class="admin-modal-body">
+      <input type="hidden" id="editFlightId">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Airline Name</label>
+          <input type="text" id="fAirline" class="form-input" placeholder="e.g. Air India">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Airline Code</label>
+          <input type="text" id="fCode" class="form-input" placeholder="e.g. AI" maxlength="4">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Flight Number</label>
+          <input type="text" id="fFlightNum" class="form-input" placeholder="e.g. AI-301">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cabin Class</label>
+          <select id="fCls" class="form-select">
+            <option>Economy</option><option>Premium Economy</option>
+            <option>Business</option><option>First Class</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">From (Code)</label>
+          <input type="text" id="fDepCode" class="form-input" placeholder="DEL" maxlength="4">
+        </div>
+        <div class="form-group">
+          <label class="form-label">To (Code)</label>
+          <input type="text" id="fArrCode" class="form-input" placeholder="BOM" maxlength="4">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Departure Time</label>
+          <input type="time" id="fDep" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Arrival Time</label>
+          <input type="time" id="fArr" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Duration</label>
+          <input type="text" id="fDuration" class="form-input" placeholder="2h 15m">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Stops</label>
+          <select id="fStops" class="form-select">
+            <option value="0">Non-stop</option>
+            <option value="1">1 Stop</option>
+            <option value="2">2 Stops</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Price (₹)</label>
+          <input type="number" id="fPrice" class="form-input" placeholder="4850" min="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Original Price (₹)</label>
+          <input type="number" id="fOrigPrice" class="form-input" placeholder="6200" min="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Baggage Allowance</label>
+          <input type="text" id="fBaggage" class="form-input" placeholder="15kg">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Refundable</label>
+          <select id="fRefundable" class="form-select">
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select id="fStatus" class="form-select">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Airline Color Class</label>
+          <select id="fColor" class="form-select">
+            <option value="ai-color">Air India (Red)</option>
+            <option value="ig-color">IndiGo (Navy)</option>
+            <option value="sg-color">SpiceJet (Orange)</option>
+            <option value="ek-color">Emirates (Gold/Red)</option>
+            <option value="lh-color">Lufthansa (Blue)</option>
+            <option value="sq-color">Singapore Air (Blue)</option>
+            <option value="ba-color">British Airways</option>
+            <option value="qr-color">Qatar Airways</option>
+            <option value="aa-color">American Airlines</option>
+            <option value="ua-color">United Airlines</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="admin-modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('flightModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveFlight()">Save Flight</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── User Edit Modal ──────────────────────────────────────────── -->
+<div class="admin-modal-overlay" id="userModal">
+  <div class="admin-modal">
+    <div class="admin-modal-header">
+      <div class="admin-modal-title">👤 Edit User</div>
+      <button class="admin-modal-close" onclick="closeModal('userModal')">✕</button>
+    </div>
+    <div class="admin-modal-body">
+      <input type="hidden" id="editUserId">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Display Name</label>
+          <input type="text" id="uName" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email (read-only)</label>
+          <input type="email" id="uEmail" class="form-input" disabled style="opacity:0.6;">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <input type="tel" id="uPhone" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">City</label>
+          <input type="text" id="uCity" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Country</label>
+          <input type="text" id="uCountry" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Account Status</label>
+          <select id="uStatus" class="form-select">
+            <option value="active">Active</option>
+            <option value="suspended">Suspended</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="admin-modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('userModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveUser()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/main.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/auth.js"></script>
+<script>
+
+/* ── Auth Guard ─────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  if (!window.af) return;
+  window.af.auth.onAuthStateChanged(user => {
+    if (!user) { window.location.href = 'login.html?redirect=admin.html'; return; }
+    if (!user.isAdmin) {
+      alert('Access denied. This area is for administrators only.');
+      window.location.href = 'index.html';
+      return;
+    }
+    /* Set admin info in sidebar */
+    const initials = (user.displayName||'A').split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+    document.getElementById('sidebarAvatar').textContent = initials;
+    document.getElementById('sidebarName').textContent   = user.displayName || user.email;
+    document.getElementById('overviewAdminName').textContent = user.displayName || 'Admin';
+    if (!window.af.isDemo) document.getElementById('modeLabel').textContent = 'Firebase Live';
+    loadDashboard();
+  });
+});
+
+/* ── Section navigation ─────────────────────────────────────────── */
+function showSection(name, btn) {
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.admin-nav-link').forEach(l => l.classList.remove('active'));
+  document.getElementById('section-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  document.getElementById('breadcrumbCurrent').textContent =
+    { overview:'Overview', flights:'Flights', users:'Users', bookings:'Bookings', settings:'Settings' }[name] || name;
+
+  /* Lazy load section data */
+  if (name === 'flights')  loadFlights();
+  if (name === 'users')    loadUsers();
+  if (name === 'bookings') loadAllBookings();
+}
+
+/* ── Load dashboard data ────────────────────────────────────────── */
+async function loadDashboard() {
+  const stats = await Promise.resolve(window.af.db.getStats());
+  const flights = window.af.db.getFlights();
+
+  /* Update stats cards */
+  setEl('statTotalUsers',    stats.totalUsers);
+  setEl('statActiveUsers',   stats.activeUsers + ' Active');
+  setEl('statTotalBookings', stats.totalBookings);
+  setEl('statPendingBookings', stats.pendingBookings + ' Pending');
+  setEl('statRevenue',       '₹' + (stats.revenue||0).toLocaleString());
+  setEl('statConfirmedRevenue', stats.confirmedBookings + ' Confirmed');
+  setEl('statActiveFlights', stats.activeFlights);
+  setEl('statInactiveFlights', (stats.totalFlights - stats.activeFlights) + ' Inactive');
+
+  /* Update nav badges */
+  setEl('navFlightCount',  flights.length);
+  setEl('navUserCount',    stats.totalUsers);
+  setEl('navBookingCount', stats.totalBookings);
+
+  /* Booking status chart */
+  const total = stats.totalBookings || 1;
+  const confPct = Math.round(stats.confirmedBookings / total * 100);
+  const pendPct = Math.round(stats.pendingBookings   / total * 100);
+  const cancPct = Math.round(stats.cancelledBookings / total * 100);
+  setTimeout(() => {
+    setEl('confPct', confPct + '%'); setEl('confBar', null, 'width', confPct + '%');
+    setEl('pendPct', pendPct + '%'); setEl('pendBar', null, 'width', pendPct + '%');
+    setEl('cancPct', cancPct + '%'); setEl('cancBar', null, 'width', cancPct + '%');
+  }, 300);
+
+  /* Airline revenue chart */
+  const bookings = window.af.db.getBookings().filter(b=>b.status==='confirmed');
+  const airlineRev = {};
+  bookings.forEach(b => { airlineRev[b.airline] = (airlineRev[b.airline]||0) + b.amount; });
+  const sorted = Object.entries(airlineRev).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const maxRev = Math.max(...sorted.map(([,v])=>v), 1);
+  const colors = ['var(--blue-500)','var(--gold)','var(--emerald)','var(--violet)','var(--cyan)','var(--rose)'];
+  const chartEl = document.getElementById('airlineChart');
+  const legendEl = document.getElementById('airlineLegend');
+  if (chartEl && sorted.length) {
+    chartEl.innerHTML = sorted.map(([a,v],i) =>
+      `<div class="mini-chart-bar" style="height:${Math.max(8,Math.round(v/maxRev*100))}%;background:${colors[i]}40;border-top:2px solid ${colors[i]};" data-val="₹${Math.round(v/1000)}k" title="${a}: ₹${v.toLocaleString()}"></div>`
+    ).join('');
+    legendEl.innerHTML = sorted.map(([a],i) =>
+      `<span style="font-size:0.6875rem;color:var(--text-4);display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;border-radius:50%;background:${colors[i]};display:inline-block;"></span>${a.split(' ')[0]}</span>`
+    ).join('');
+  }
+
+  /* Recent bookings table */
+  const recent = stats.recentBookings || [];
+  const tbody = document.getElementById('recentBookingsBody');
+  if (tbody) {
+    if (!recent.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-4);padding:20px;">No bookings yet.</td></tr>'; }
+    else tbody.innerHTML = recent.map(b => `
+      <tr>
+        <td><strong style="font-family:monospace;color:var(--blue-400);font-size:0.8125rem;">${b.id}</strong></td>
+        <td>${b.userName||'—'}</td>
+        <td><strong>${b.from||'?'}</strong> → <strong>${b.to||'?'}</strong></td>
+        <td>${b.airline||'—'}</td>
+        <td style="font-weight:600;">₹${(b.amount||0).toLocaleString()}</td>
+        <td><span class="user-status-badge ${b.status}">● ${b.status}</span></td>
+      </tr>
+    `).join('');
+  }
+}
+
+/* ── Load Flights table ─────────────────────────────────────────── */
+function loadFlights() {
+  const flights = window.af.db.getFlights();
+  const tbody = document.getElementById('flightsBody');
+  if (!flights.length) {
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--text-4);padding:24px;">No flights found.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = flights.map(f => `
+    <tr data-search="${(f.airline+f.flightNum+f.depCode+f.arrCode).toLowerCase()}">
+      <td style="font-family:monospace;font-size:0.75rem;color:var(--text-4);">${f.id}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:800;color:white;" class="${f.color}">${f.code}</div>
+          <span style="font-size:0.875rem;font-weight:500;">${f.airline}</span>
+        </div>
+      </td>
+      <td><strong style="font-size:0.875rem;">${f.flightNum}</strong></td>
+      <td><strong>${f.depCode}</strong> <span style="color:var(--blue-400);">→</span> <strong>${f.arrCode}</strong></td>
+      <td style="font-size:0.8125rem;">${f.dep} <span style="color:var(--text-5);">–</span> ${f.arr}</td>
+      <td>
+        <div style="font-weight:600;font-size:0.9375rem;">₹${(f.price||0).toLocaleString()}</div>
+        <div style="font-size:0.75rem;color:var(--text-5);text-decoration:line-through;">₹${(f.originalPrice||0).toLocaleString()}</div>
+      </td>
+      <td style="font-size:0.8125rem;">${f.cls||f.class||'Economy'}</td>
+      <td><span class="user-status-badge ${f.status||'active'}">${f.status||'active'}</span></td>
+      <td>
+        <div style="display:flex;gap:6px;">
+          <button class="admin-action-btn btn-edit" onclick="openFlightModal('${f.id}')">Edit</button>
+          <button class="admin-action-btn btn-toggle" onclick="toggleFlightStatus('${f.id}','${f.status||'active'}')">${f.status==='active'?'Deactivate':'Activate'}</button>
+          <button class="admin-action-btn btn-delete" onclick="deleteFlight('${f.id}')">Delete</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+/* ── Load Users table ───────────────────────────────────────────── */
+function loadUsers() {
+  const users = window.af.db.getUsers();
+  const tbody = document.getElementById('usersBody');
+  if (!users.length) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-4);padding:24px;">No users found.</td></tr>'; return; }
+  tbody.innerHTML = users.map(u => `
+    <tr data-search="${(u.displayName+u.email+u.city).toLowerCase()}" data-status="${u.status}">
+      <td>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:32px;height:32px;border-radius:50%;background:var(--gradient-blue);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;color:white;">${(u.displayName||u.email).charAt(0).toUpperCase()}</div>
+          <span style="font-size:0.875rem;font-weight:500;">${u.displayName||'—'}</span>
+        </div>
+      </td>
+      <td style="font-size:0.8125rem;">${u.email}</td>
+      <td style="font-size:0.8125rem;">${u.phone||'—'}</td>
+      <td style="font-size:0.8125rem;">${u.city||'—'}</td>
+      <td style="font-size:0.8125rem;">${u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-IN',{month:'short',day:'numeric',year:'numeric'}) : '—'}</td>
+      <td style="text-align:center;"><strong>${u.bookingCount||0}</strong></td>
+      <td><span class="user-status-badge ${u.status||'active'}">${u.status||'active'}</span></td>
+      <td>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="admin-action-btn btn-edit" onclick="openUserModal('${u.uid}')">Edit</button>
+          <button class="admin-action-btn btn-toggle" onclick="toggleUserStatus('${u.uid}','${u.status||'active'}')">${u.status==='suspended'?'Activate':'Suspend'}</button>
+          <button class="admin-action-btn btn-delete" onclick="deleteUser('${u.uid}')">Delete</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+/* ── Load Bookings table ────────────────────────────────────────── */
+function loadAllBookings() {
+  const bookings = [...window.af.db.getBookings()].sort((a,b)=>(b.bookedAt||'').localeCompare(a.bookedAt||''));
+  const tbody = document.getElementById('allBookingsBody');
+  if (!bookings.length) { tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--text-4);padding:24px;">No bookings found.</td></tr>'; return; }
+  tbody.innerHTML = bookings.map(b => `
+    <tr data-search="${(b.id+b.userName+b.from+b.to+b.airline).toLowerCase()}" data-status="${b.status}">
+      <td><strong style="font-family:monospace;color:var(--blue-400);">${b.id}</strong></td>
+      <td style="font-size:0.875rem;">${b.userName||'—'}</td>
+      <td><strong>${b.from||'?'}</strong> <span style="color:var(--blue-400);">→</span> <strong>${b.to||'?'}</strong></td>
+      <td style="font-size:0.8125rem;">${b.airline||'—'}<br><span style="color:var(--text-4);">${b.flightNum||''}</span></td>
+      <td style="font-size:0.8125rem;">${b.travelDate ? new Date(b.travelDate).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—'}</td>
+      <td style="font-size:0.8125rem;">${b.cls||'—'}</td>
+      <td style="font-weight:600;">₹${(b.amount||0).toLocaleString()}</td>
+      <td><span class="user-status-badge ${b.status||'pending'}">${b.status||'pending'}</span></td>
+      <td>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          ${b.status!=='confirmed' ? `<button class="admin-action-btn btn-view" onclick="confirmBooking('${b.id}')">Confirm</button>` : ''}
+          ${b.status!=='cancelled' ? `<button class="admin-action-btn btn-delete" onclick="cancelBookingAdmin('${b.id}')">Cancel</button>` : ''}
+          <button class="admin-action-btn btn-delete" onclick="deleteBooking('${b.id}')">Delete</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+/* ── Flight CRUD ────────────────────────────────────────────────── */
+let _editingFlightId = null;
+
+function openFlightModal(id) {
+  _editingFlightId = id || null;
+  document.getElementById('flightModalTitle').textContent = id ? '✏️ Edit Flight' : '✈ Add New Flight';
+  if (id) {
+    const f = window.af.db.getFlight(id);
+    if (f) {
+      setField('fAirline', f.airline); setField('fCode', f.code);
+      setField('fFlightNum', f.flightNum); setField('fCls', f.cls||f.class||'Economy');
+      setField('fDepCode', f.depCode); setField('fArrCode', f.arrCode);
+      setField('fDep', f.dep); setField('fArr', f.arr);
+      setField('fDuration', f.duration); setField('fStops', String(f.stops||0));
+      setField('fPrice', f.price); setField('fOrigPrice', f.originalPrice);
+      setField('fBaggage', f.baggage); setField('fRefundable', String(f.refundable));
+      setField('fStatus', f.status||'active'); setField('fColor', f.color||'ai-color');
+    }
+  } else {
+    ['fAirline','fCode','fFlightNum','fDepCode','fArrCode','fDep','fArr','fDuration','fPrice','fOrigPrice','fBaggage'].forEach(id => setField(id,''));
+    setField('fStops','0'); setField('fRefundable','true'); setField('fStatus','active'); setField('fCls','Economy');
+  }
+  openModal('flightModal');
+}
+
+function saveFlight() {
+  const f = {
+    airline: getField('fAirline'), code: getField('fCode').toUpperCase(),
+    flightNum: getField('fFlightNum'), cls: getField('fCls'), class: getField('fCls'),
+    depCode: getField('fDepCode').toUpperCase(), arrCode: getField('fArrCode').toUpperCase(),
+    dep: getField('fDep'), arr: getField('fArr'),
+    duration: getField('fDuration'), stops: parseInt(getField('fStops')||0),
+    price: parseInt(getField('fPrice')||0), originalPrice: parseInt(getField('fOrigPrice')||0),
+    baggage: getField('fBaggage'), refundable: getField('fRefundable') === 'true',
+    status: getField('fStatus'), color: getField('fColor'),
+    tags: [], id: _editingFlightId || undefined,
+  };
+  if (!f.airline || !f.flightNum || !f.depCode || !f.arrCode || !f.price) {
+    showToast('Please fill in all required fields.','⚠️'); return;
+  }
+  if (_editingFlightId) { window.af.db.updateFlight(_editingFlightId, f); showToast('Flight updated!','✅'); }
+  else { window.af.db.addFlight(f); showToast('Flight added!','✅'); }
+  closeModal('flightModal');
+  loadFlights();
+  loadDashboard();
+}
+
+function toggleFlightStatus(id, currentStatus) {
+  const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+  window.af.db.updateFlight(id, { status: newStatus });
+  showToast(`Flight ${newStatus === 'active' ? 'activated' : 'deactivated'}.`, '✅');
+  loadFlights(); loadDashboard();
+}
+
+function deleteFlight(id) {
+  if (!confirm('Delete this flight permanently?')) return;
+  window.af.db.deleteFlight(id);
+  showToast('Flight deleted.', '✅');
+  loadFlights(); loadDashboard();
+}
+
+/* ── User CRUD ──────────────────────────────────────────────────── */
+function openUserModal(uid) {
+  const u = window.af.db.getUser(uid);
+  if (!u) return;
+  document.getElementById('editUserId').value = uid;
+  setField('uName', u.displayName); setField('uEmail', u.email);
+  setField('uPhone', u.phone||''); setField('uCity', u.city||'');
+  setField('uCountry', u.country||'India'); setField('uStatus', u.status||'active');
+  openModal('userModal');
+}
+
+function saveUser() {
+  const uid = document.getElementById('editUserId').value;
+  window.af.db.updateUser(uid, {
+    displayName: getField('uName'), phone: getField('uPhone'),
+    city: getField('uCity'), country: getField('uCountry'), status: getField('uStatus'),
+  });
+  showToast('User updated!', '✅');
+  closeModal('userModal');
+  loadUsers();
+}
+
+function toggleUserStatus(uid, current) {
+  const newStatus = current === 'active' ? 'suspended' : 'active';
+  window.af.db.updateUser(uid, { status: newStatus });
+  showToast(`User ${newStatus}.`, '✅');
+  loadUsers();
+}
+
+function deleteUser(uid) {
+  if (!confirm('Permanently delete this user and their data?')) return;
+  window.af.db.deleteUser(uid);
+  window.af.db.getBookings().filter(b=>b.userId===uid).forEach(b=>window.af.db.deleteBooking(b.id));
+  showToast('User deleted.', '✅');
+  loadUsers(); loadDashboard();
+}
+
+/* ── Booking Management ─────────────────────────────────────────── */
+function confirmBooking(id) {
+  window.af.db.updateBooking(id, { status: 'confirmed' });
+  showToast('Booking confirmed.', '✅');
+  loadAllBookings(); loadDashboard();
+}
+function cancelBookingAdmin(id) {
+  if (!confirm('Cancel this booking?')) return;
+  window.af.db.updateBooking(id, { status: 'cancelled' });
+  showToast('Booking cancelled.', '✅');
+  loadAllBookings(); loadDashboard();
+}
+function deleteBooking(id) {
+  if (!confirm('Permanently delete this booking record?')) return;
+  window.af.db.deleteBooking(id);
+  showToast('Booking deleted.', '✅');
+  loadAllBookings(); loadDashboard();
+}
+
+/* ── Filter / Search ────────────────────────────────────────────── */
+function filterTable(input, tbodyId) {
+  const q = input.value.toLowerCase();
+  document.querySelectorAll('#' + tbodyId + ' tr[data-search]').forEach(row => {
+    row.style.display = !q || row.dataset.search?.includes(q) ? '' : 'none';
+  });
+}
+function filterUsersByStatus(status) {
+  document.querySelectorAll('#usersBody tr[data-status]').forEach(row => {
+    row.style.display = !status || row.dataset.status === status ? '' : 'none';
+  });
+}
+function filterBookingsByStatus(status) {
+  document.querySelectorAll('#allBookingsBody tr[data-status]').forEach(row => {
+    row.style.display = !status || row.dataset.status === status ? '' : 'none';
+  });
+}
+
+/* ── Modal helpers ──────────────────────────────────────────────── */
+function openModal(id)  { document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
+document.querySelectorAll('.admin-modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) closeModal(m.id); });
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.admin-modal-overlay.open').forEach(m=>closeModal(m.id)); });
+
+/* ── Utility ────────────────────────────────────────────────────── */
+function setEl(id, val, prop, pval) {
+  const el = document.getElementById(id); if (!el) return;
+  if (prop) el.style[prop] = pval; else el.textContent = val;
+}
+function setField(id, val) { const el = document.getElementById(id); if (el) el.value = val; }
+function getField(id) { return document.getElementById(id)?.value || ''; }
+
+function refreshData() { loadDashboard(); showToast('Data refreshed.', '↺'); }
+
+function resetDemoData() {
+  ['af_users','af_bookings','af_admin_flights','af_currentUser'].forEach(k => localStorage.removeItem(k));
+  showToast('Demo data reset! Reloading...', '🔄');
+  setTimeout(() => location.reload(), 1000);
+}
+</script>
+</body>
+</html>

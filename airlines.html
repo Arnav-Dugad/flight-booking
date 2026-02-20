@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Airlines — Arnav Flights</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
+</head>
+<body>
+
+<!-- Page Loader -->
+<div id="pageLoader" class="page-loader">
+  <div class="loader-plane">✈</div>
+  <div class="loader-logo">Arnav <span style="color:var(--blue-400)">Flights</span></div>
+  <div class="loader-bar"><div class="loader-progress"></div></div>
+</div>
+
+<!-- Navigation -->
+<nav class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon">✈</div>
+      Arnav <span>Flights</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="results.html">Search Flights</a></li>
+      <li><a href="airlines.html" class="active">Airlines</a></li>
+      <li><a href="booking.html">My Trips</a></li>
+    </ul>
+    <div class="nav-actions">
+      <div id="navGuest" style="display:flex;align-items:center;gap:8px;">
+        <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
+        <a href="login.html?tab=signup" class="btn btn-primary btn-sm">Sign Up</a>
+      </div>
+      <div id="navUser" style="display:none;align-items:center;gap:8px;">
+        <a href="admin.html" class="btn btn-ghost btn-sm" id="navAdminBtn" style="display:none;font-size:0.8125rem;">⚙ Admin</a>
+        <a href="profile.html" class="nav-avatar" id="navAvatar" data-tooltip="My Profile">AF</a>
+        <button class="btn btn-ghost btn-sm" id="navSignOutBtn">Sign Out</button>
+      </div>
+    </div>
+    <button class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Nav -->
+<div class="mobile-nav" id="mobileNav">
+  <button id="mobileClose" style="position:absolute;top:24px;right:24px;font-size:1.5rem;color:var(--text-3);cursor:pointer;">✕</button>
+  <ul class="mobile-nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="results.html">Search Flights</a></li>
+    <li><a href="airlines.html" class="active">Airlines</a></li>
+    <li><a href="booking.html">My Trips</a></li>
+  </ul>
+  <div id="mobileGuestLinks" style="display:flex;flex-direction:column;gap:8px;padding:0 24px;margin-top:16px;">
+    <a href="login.html" class="btn btn-primary" style="text-align:center;">Sign In</a>
+    <a href="login.html?tab=signup" class="btn btn-ghost" style="text-align:center;">Create Account</a>
+  </div>
+  <div id="mobileUserLinks" style="display:none;flex-direction:column;gap:8px;padding:0 24px;margin-top:16px;">
+    <div id="mobileUserName" style="font-size:0.9375rem;font-weight:600;color:var(--text-0);margin-bottom:4px;padding:0 4px;"></div>
+    <a href="profile.html" class="btn btn-ghost" style="text-align:left;">👤 My Profile</a>
+    <a href="admin.html" class="btn btn-ghost" id="mobileAdminBtn" style="display:none;text-align:left;">⚙ Admin Dashboard</a>
+    <button class="btn btn-ghost" id="mobileSignOut" style="text-align:left;color:var(--red-400,#f87171);">Sign Out</button>
+  </div>
+</div>
+
+<!-- Demo Mode Bar -->
+<div class="demo-mode-bar" id="demoModeBar"></div>
+
+<!-- Airlines Hero -->
+<section class="airlines-hero" style="position:relative;overflow:hidden;">
+  <!-- Background decoration -->
+  <div style="position:absolute;inset:0;z-index:0;">
+    <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:var(--gradient-hero);"></div>
+    <div class="hero-grid" style="opacity:0.5;"></div>
+  </div>
+
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="badge" style="margin:0 auto 20px;width:fit-content;">✈ 50+ Partner Airlines</div>
+    <h1 style="font-size:clamp(2.5rem,6vw,4.5rem);font-weight:800;letter-spacing:-0.03em;margin-bottom:16px;">
+      Our Partner <span class="gradient-text">Airlines</span>
+    </h1>
+    <p style="font-size:1.0625rem;color:var(--text-3);max-width:55ch;margin:0 auto 40px;line-height:1.7;">
+      We've partnered with the world's best airlines to bring you unbeatable routes, lowest fares, and premium experiences.
+    </p>
+
+    <!-- Search within airlines -->
+    <div style="max-width:480px;margin:0 auto;position:relative;">
+      <input type="text" id="airlineSearch" placeholder="🔍 Search airlines..." class="form-input"
+        style="width:100%;padding-left:20px;font-size:1rem;"
+        oninput="filterAirlines(this.value)">
+    </div>
+
+    <!-- Category tabs -->
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:24px;" id="categoryTabs">
+      <button class="btn btn-sm active" data-cat="all" onclick="setCategory('all',this)"
+        style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);color:var(--blue-400);">
+        All Airlines
+      </button>
+      <button class="btn btn-ghost btn-sm" data-cat="domestic" onclick="setCategory('domestic',this)">🇮🇳 Domestic</button>
+      <button class="btn btn-ghost btn-sm" data-cat="international" onclick="setCategory('international',this)">🌍 International</button>
+      <button class="btn btn-ghost btn-sm" data-cat="budget" onclick="setCategory('budget',this)">💸 Budget</button>
+      <button class="btn btn-ghost btn-sm" data-cat="premium" onclick="setCategory('premium',this)">👑 Premium</button>
+    </div>
+  </div>
+</section>
+
+<!-- World's Best Banner -->
+<div style="background:linear-gradient(135deg,rgba(245,158,11,0.08),rgba(245,158,11,0.02));border-top:1px solid rgba(245,158,11,0.15);border-bottom:1px solid rgba(245,158,11,0.15);padding:20px 0;">
+  <div class="container">
+    <div style="display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;">
+      <span style="font-size:1.5rem;">🏆</span>
+      <div>
+        <span style="font-size:0.9375rem;font-weight:600;color:var(--gold);">World's Top Airlines Available on Arnav Flights</span>
+        <span style="font-size:0.875rem;color:var(--text-3);margin-left:12px;">Skytrax-rated · Safety certified · Best-in-class service</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Airlines Grid -->
+<section style="padding:60px 0;">
+  <div class="container">
+    <div class="airlines-grid" id="airlinesGrid">
+
+      <!-- Air India -->
+      <div class="airline-card" data-cat="domestic international" data-name="air india">
+        <div class="airline-card-logo ai-color">AI</div>
+        <div style="display:flex;align-items:start;justify-content:space-between;">
+          <div>
+            <h3>Air India</h3>
+            <div class="airline-card-origin">🇮🇳 India's National Carrier</div>
+          </div>
+          <span style="padding:3px 8px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);border-radius:9999px;font-size:0.625rem;font-weight:600;color:var(--emerald);text-transform:uppercase;">Flagship</span>
+        </div>
+        <div class="airline-stats">
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">100+</div>
+            <div class="airline-stat-lbl">Routes</div>
+          </div>
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">180</div>
+            <div class="airline-stat-lbl">Destinations</div>
+          </div>
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">200+</div>
+            <div class="airline-stat-lbl">Aircraft</div>
+          </div>
+        </div>
+        <div class="airline-routes">
+          <span class="airline-route-tag">DEL–LHR</span>
+          <span class="airline-route-tag">BOM–JFK</span>
+          <span class="airline-route-tag">DEL–DXB</span>
+          <span class="airline-route-tag">+97</span>
+        </div>
+        <div class="airline-rating">
+          <div class="stars">★★★★☆</div>
+          <span class="rating-val">4.1 · Skytrax 4-Star</span>
+        </div>
+        <button class="btn btn-outline-blue btn-sm" style="width:100%;margin-top:16px;" onclick="searchAirline('Air India')">Search AI Flights →</button>
+      </div>
+
+      <!-- IndiGo -->
+      <div class="airline-card" data-cat="domestic budget" data-name="indigo">
+        <div class="airline-card-logo ig-color">6E</div>
+        <div style="display:flex;align-items:start;justify-content:space-between;">
+          <div>
+            <h3>IndiGo</h3>
+            <div class="airline-card-origin">🇮🇳 India's Largest Airline</div>
+          </div>
+          <span style="padding:3px 8px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);border-radius:9999px;font-size:0.625rem;font-weight:600;color:var(--blue-400);text-transform:uppercase;">Best OTP</span>
+        </div>
+        <div class="airline-stats">
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">300+</div>
+            <div class="airline-stat-lbl">Routes</div>
+          </div>
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">100+</div>
+            <div class="airline-stat-lbl">Cities</div>
+          </div>
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">330+</div>
+            <div class="airline-stat-lbl">Aircraft</div>
+          </div>
+        </div>
+        <div class="airline-routes">
+          <span class="airline-route-tag">DEL–BOM</span>
+          <span class="airline-route-tag">BLR–HYD</span>
+          <span class="airline-route-tag">CCU–DEL</span>
+          <span class="airline-route-tag">+297</span>
+        </div>
+        <div class="airline-rating">
+          <div class="stars">★★★★☆</div>
+          <span class="rating-val">4.0 · Budget Leader</span>
+        </div>
+        <button class="btn btn-outline-blue btn-sm" style="width:100%;margin-top:16px;" onclick="searchAirline('IndiGo')">Search 6E Flights →</button>
+      </div>
+
+      <!-- SpiceJet -->
+      <div class="airline-card" data-cat="domestic budget" data-name="spicejet">
+        <div class="airline-card-logo sg-color">SG</div>
+        <div style="display:flex;align-items:start;justify-content:space-between;">
+          <div>
+            <h3>SpiceJet</h3>
+            <div class="airline-card-origin">🇮🇳 India · Budget Carrier</div>
+          </div>
+          <span style="padding:3px 8px;background:rgba(255,69,0,0.1);border:1px solid rgba(255,69,0,0.2);border-radius:9999px;font-size:0.625rem;font-weight:600;color:#FF6B35;text-transform:uppercase;">Budget</span>
+        </div>
+        <div class="airline-stats">
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">60+</div>
+            <div class="airline-stat-lbl">Routes</div>
+          </div>
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">54</div>
+            <div class="airline-stat-lbl">Cities</div>
+          </div>
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">80+</div>
+            <div class="airline-stat-lbl">Aircraft</div>
+          </div>
+        </div>
+        <div class="airline-routes">
+          <span class="airline-route-tag">DEL–MAA</span>
+          <span class="airline-route-tag">BOM–CCU</span>
+          <span class="airline-route-tag">DEL–BLR</span>
+          <span class="airline-route-tag">+57</span>
+        </div>
+        <div class="airline-rating">
+          <div class="stars">★★★☆☆</div>
+          <span class="rating-val">3.5 · Value Pick</span>
+        </div>
+        <button class="btn btn-outline-blue btn-sm" style="width:100%;margin-top:16px;" onclick="searchAirline('SpiceJet')">Search SG Flights →</button>
+      </div>
+
+      <!-- Emirates -->
+      <div class="airline-card" data-cat="international premium" data-name="emirates">
+        <div class="airline-card-logo ek-color">EK</div>
+        <div style="display:flex;align-items:start;justify-content:space-between;">
+          <div>
+            <h3>Emirates</h3>
+            <div class="airline-card-origin">🇦🇪 Dubai, UAE</div>
+          </div>
+          <span style="padding:3px 8px;background:rgba(212,175,55,0.15);border:1px solid rgba(212,175,55,0.3);border-radius:9999px;font-size:0.625rem;font-weight:600;color:var(--gold);text-transform:uppercase;">5-Star</span>
+        </div>
+        <div class="airline-stats">
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">150+</div>
+            <div class="airline-stat-lbl">Countries</div>
+          </div>
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">280+</div>
+            <div class="airline-stat-lbl">Destinations</div>
+          </div>
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">270+</div>
+            <div class="airline-stat-lbl">Aircraft</div>
+          </div>
+        </div>
+        <div class="airline-routes">
+          <span class="airline-route-tag">DEL–DXB</span>
+          <span class="airline-route-tag">BOM–DXB</span>
+          <span class="airline-route-tag">DXB–LHR</span>
+          <span class="airline-route-tag">+150</span>
+        </div>
+        <div class="airline-rating">
+          <div class="stars">★★★★★</div>
+          <span class="rating-val">5.0 · World's Best</span>
+        </div>
+        <button class="btn btn-outline-blue btn-sm" style="width:100%;margin-top:16px;" onclick="searchAirline('Emirates')">Search EK Flights →</button>
+      </div>
+
+      <!-- Lufthansa -->
+      <div class="airline-card" data-cat="international premium" data-name="lufthansa">
+        <div class="airline-card-logo lh-color">LH</div>
+        <div style="display:flex;align-items:start;justify-content:space-between;">
+          <div>
+            <h3>Lufthansa</h3>
+            <div class="airline-card-origin">🇩🇪 Frankfurt, Germany</div>
+          </div>
+          <span style="padding:3px 8px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);border-radius:9999px;font-size:0.625rem;font-weight:600;color:var(--blue-400);text-transform:uppercase;">5-Star</span>
+        </div>
+        <div class="airline-stats">
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">100+</div>
+            <div class="airline-stat-lbl">Countries</div>
+          </div>
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">220+</div>
+            <div class="airline-stat-lbl">Destinations</div>
+          </div>
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">250+</div>
+            <div class="airline-stat-lbl">Aircraft</div>
+          </div>
+        </div>
+        <div class="airline-routes">
+          <span class="airline-route-tag">DEL–FRA</span>
+          <span class="airline-route-tag">BOM–MUC</span>
+          <span class="airline-route-tag">FRA–JFK</span>
+          <span class="airline-route-tag">+200</span>
+        </div>
+        <div class="airline-rating">
+          <div class="stars">★★★★★</div>
+          <span class="rating-val">4.9 · Europe's Best</span>
+        </div>
+        <button class="btn btn-outline-blue btn-sm" style="width:100%;margin-top:16px;" onclick="searchAirline('Lufthansa')">Search LH Flights →</button>
+      </div>
+
+      <!-- Singapore Airlines -->
+      <div class="airline-card" data-cat="international premium" data-name="singapore airlines">
+        <div class="airline-card-logo sq-color">SQ</div>
+        <div style="display:flex;align-items:start;justify-content:space-between;">
+          <div>
+            <h3>Singapore Airlines</h3>
+            <div class="airline-card-origin">🇸🇬 Singapore</div>
+          </div>
+          <span style="padding:3px 8px;background:rgba(212,175,55,0.15);border:1px solid rgba(212,175,55,0.3);border-radius:9999px;font-size:0.625rem;font-weight:600;color:var(--gold);text-transform:uppercase;">World #1</span>
+        </div>
+        <div class="airline-stats">
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">35+</div>
+            <div class="airline-stat-lbl">Countries</div>
+          </div>
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">100+</div>
+            <div class="airline-stat-lbl">Destinations</div>
+          </div>
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">130+</div>
+            <div class="airline-stat-lbl">Aircraft</div>
+          </div>
+        </div>
+        <div class="airline-routes">
+          <span class="airline-route-tag">DEL–SIN</span>
+          <span class="airline-route-tag">BOM–SIN</span>
+          <span class="airline-route-tag">SIN–SYD</span>
+          <span class="airline-route-tag">+80</span>
+        </div>
+        <div class="airline-rating">
+          <div class="stars">★★★★★</div>
+          <span class="rating-val">5.0 · Skytrax #1</span>
+        </div>
+        <button class="btn btn-outline-blue btn-sm" style="width:100%;margin-top:16px;" onclick="searchAirline('Singapore Airlines')">Search SQ Flights →</button>
+      </div>
+
+      <!-- British Airways -->
+      <div class="airline-card" data-cat="international premium" data-name="british airways">
+        <div class="airline-card-logo ba-color">BA</div>
+        <div style="display:flex;align-items:start;justify-content:space-between;">
+          <div>
+            <h3>British Airways</h3>
+            <div class="airline-card-origin">🇬🇧 London, United Kingdom</div>
+          </div>
+          <span style="padding:3px 8px;background:rgba(37,104,174,0.1);border:1px solid rgba(37,104,174,0.3);border-radius:9999px;font-size:0.625rem;font-weight:600;color:#2568AE;text-transform:uppercase;">Legacy</span>
+        </div>
+        <div class="airline-stats">
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">80+</div>
+            <div class="airline-stat-lbl">Countries</div>
+          </div>
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">200+</div>
+            <div class="airline-stat-lbl">Destinations</div>
+          </div>
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">250+</div>
+            <div class="airline-stat-lbl">Aircraft</div>
+          </div>
+        </div>
+        <div class="airline-routes">
+          <span class="airline-route-tag">DEL–LHR</span>
+          <span class="airline-route-tag">BOM–LHR</span>
+          <span class="airline-route-tag">LHR–JFK</span>
+          <span class="airline-route-tag">+180</span>
+        </div>
+        <div class="airline-rating">
+          <div class="stars">★★★★☆</div>
+          <span class="rating-val">4.5 · Skytrax 4-Star</span>
+        </div>
+        <button class="btn btn-outline-blue btn-sm" style="width:100%;margin-top:16px;" onclick="searchAirline('British Airways')">Search BA Flights →</button>
+      </div>
+
+      <!-- Qatar Airways -->
+      <div class="airline-card" data-cat="international premium" data-name="qatar airways">
+        <div class="airline-card-logo qr-color">QR</div>
+        <div style="display:flex;align-items:start;justify-content:space-between;">
+          <div>
+            <h3>Qatar Airways</h3>
+            <div class="airline-card-origin">🇶🇦 Doha, Qatar</div>
+          </div>
+          <span style="padding:3px 8px;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.25);border-radius:9999px;font-size:0.625rem;font-weight:600;color:var(--gold);text-transform:uppercase;">World #1</span>
+        </div>
+        <div class="airline-stats">
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">160+</div>
+            <div class="airline-stat-lbl">Countries</div>
+          </div>
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">160+</div>
+            <div class="airline-stat-lbl">Destinations</div>
+          </div>
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">230+</div>
+            <div class="airline-stat-lbl">Aircraft</div>
+          </div>
+        </div>
+        <div class="airline-routes">
+          <span class="airline-route-tag">BOM–DOH</span>
+          <span class="airline-route-tag">DEL–DOH</span>
+          <span class="airline-route-tag">DOH–LHR</span>
+          <span class="airline-route-tag">+150</span>
+        </div>
+        <div class="airline-rating">
+          <div class="stars">★★★★★</div>
+          <span class="rating-val">5.0 · Skytrax #1 2024</span>
+        </div>
+        <button class="btn btn-outline-blue btn-sm" style="width:100%;margin-top:16px;" onclick="searchAirline('Qatar Airways')">Search QR Flights →</button>
+      </div>
+
+      <!-- American Airlines -->
+      <div class="airline-card" data-cat="international" data-name="american airlines">
+        <div class="airline-card-logo aa-color">AA</div>
+        <div style="display:flex;align-items:start;justify-content:space-between;">
+          <div>
+            <h3>American Airlines</h3>
+            <div class="airline-card-origin">🇺🇸 Fort Worth, USA</div>
+          </div>
+        </div>
+        <div class="airline-stats">
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">50+</div>
+            <div class="airline-stat-lbl">Countries</div>
+          </div>
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">350+</div>
+            <div class="airline-stat-lbl">Destinations</div>
+          </div>
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">900+</div>
+            <div class="airline-stat-lbl">Aircraft</div>
+          </div>
+        </div>
+        <div class="airline-routes">
+          <span class="airline-route-tag">DEL–JFK</span>
+          <span class="airline-route-tag">JFK–LAX</span>
+          <span class="airline-route-tag">LAX–SYD</span>
+          <span class="airline-route-tag">+300</span>
+        </div>
+        <div class="airline-rating">
+          <div class="stars">★★★★☆</div>
+          <span class="rating-val">4.0 · US Leader</span>
+        </div>
+        <button class="btn btn-outline-blue btn-sm" style="width:100%;margin-top:16px;" onclick="searchAirline('American Airlines')">Search AA Flights →</button>
+      </div>
+
+      <!-- United Airlines -->
+      <div class="airline-card" data-cat="international" data-name="united airlines">
+        <div class="airline-card-logo ua-color">UA</div>
+        <div style="display:flex;align-items:start;justify-content:space-between;">
+          <div>
+            <h3>United Airlines</h3>
+            <div class="airline-card-origin">🇺🇸 Chicago, USA</div>
+          </div>
+        </div>
+        <div class="airline-stats">
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">50+</div>
+            <div class="airline-stat-lbl">Countries</div>
+          </div>
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">340+</div>
+            <div class="airline-stat-lbl">Destinations</div>
+          </div>
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">700+</div>
+            <div class="airline-stat-lbl">Aircraft</div>
+          </div>
+        </div>
+        <div class="airline-routes">
+          <span class="airline-route-tag">DEL–EWR</span>
+          <span class="airline-route-tag">BOM–ORD</span>
+          <span class="airline-route-tag">ORD–SFO</span>
+          <span class="airline-route-tag">+310</span>
+        </div>
+        <div class="airline-rating">
+          <div class="stars">★★★★☆</div>
+          <span class="rating-val">3.9 · Hub Leader</span>
+        </div>
+        <button class="btn btn-outline-blue btn-sm" style="width:100%;margin-top:16px;" onclick="searchAirline('United Airlines')">Search UA Flights →</button>
+      </div>
+
+      <!-- Air India Express -->
+      <div class="airline-card" data-cat="domestic budget" data-name="air india express">
+        <div class="airline-card-logo" style="background:linear-gradient(135deg,#C8102E,#FF8800);">IX</div>
+        <div style="display:flex;align-items:start;justify-content:space-between;">
+          <div>
+            <h3>Air India Express</h3>
+            <div class="airline-card-origin">🇮🇳 India · Low-Cost</div>
+          </div>
+          <span style="padding:3px 8px;background:rgba(255,136,0,0.1);border:1px solid rgba(255,136,0,0.2);border-radius:9999px;font-size:0.625rem;font-weight:600;color:#FF8800;text-transform:uppercase;">Value</span>
+        </div>
+        <div class="airline-stats">
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">60+</div>
+            <div class="airline-stat-lbl">Routes</div>
+          </div>
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">30+</div>
+            <div class="airline-stat-lbl">Cities</div>
+          </div>
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">70+</div>
+            <div class="airline-stat-lbl">Aircraft</div>
+          </div>
+        </div>
+        <div class="airline-routes">
+          <span class="airline-route-tag">COK–DXB</span>
+          <span class="airline-route-tag">BOM–BAH</span>
+          <span class="airline-route-tag">MAA–SIN</span>
+          <span class="airline-route-tag">+50</span>
+        </div>
+        <div class="airline-rating">
+          <div class="stars">★★★☆☆</div>
+          <span class="rating-val">3.6 · Budget Value</span>
+        </div>
+        <button class="btn btn-outline-blue btn-sm" style="width:100%;margin-top:16px;" onclick="searchAirline('Air India Express')">Search IX Flights →</button>
+      </div>
+
+      <!-- Vistara -->
+      <div class="airline-card" data-cat="domestic premium" data-name="vistara">
+        <div class="airline-card-logo" style="background:linear-gradient(135deg,#4B0082,#7B68EE);">UK</div>
+        <div style="display:flex;align-items:start;justify-content:space-between;">
+          <div>
+            <h3>Vistara (TATA)</h3>
+            <div class="airline-card-origin">🇮🇳 India · Premium Carrier</div>
+          </div>
+          <span style="padding:3px 8px;background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.2);border-radius:9999px;font-size:0.625rem;font-weight:600;color:var(--violet);text-transform:uppercase;">Premium</span>
+        </div>
+        <div class="airline-stats">
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">50+</div>
+            <div class="airline-stat-lbl">Routes</div>
+          </div>
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">45+</div>
+            <div class="airline-stat-lbl">Cities</div>
+          </div>
+          <div class="airline-stat-item">
+            <div class="airline-stat-val">50+</div>
+            <div class="airline-stat-lbl">Aircraft</div>
+          </div>
+        </div>
+        <div class="airline-routes">
+          <span class="airline-route-tag">DEL–SIN</span>
+          <span class="airline-route-tag">BOM–LHR</span>
+          <span class="airline-route-tag">DEL–BOM</span>
+          <span class="airline-route-tag">+40</span>
+        </div>
+        <div class="airline-rating">
+          <div class="stars">★★★★★</div>
+          <span class="rating-val">4.8 · India's Best</span>
+        </div>
+        <button class="btn btn-outline-blue btn-sm" style="width:100%;margin-top:16px;" onclick="searchAirline('Vistara')">Search UK Flights →</button>
+      </div>
+
+    </div>
+
+    <!-- No results state -->
+    <div id="noResults" style="display:none;text-align:center;padding:60px 0;">
+      <div style="font-size:3rem;margin-bottom:16px;">✈️</div>
+      <h3 style="font-size:1.25rem;color:var(--text-1);margin-bottom:8px;">No airlines found</h3>
+      <p style="color:var(--text-4);font-size:0.875rem;">Try a different search term.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- Airline Alliance Section -->
+<section style="padding:60px 0;background:var(--bg-1);border-top:1px solid var(--glass-border);">
+  <div class="container">
+    <div class="section-header reveal" style="text-align:center;">
+      <div class="section-label">Flight Alliances</div>
+      <h2>Travel Further <span class="gradient-text">Together</span></h2>
+      <p>Our partner airlines belong to the world's major alliances, giving you access to seamless global connectivity.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:40px;" class="reveal">
+
+      <div class="glass-card" style="padding:28px;text-align:center;">
+        <div style="font-size:2rem;font-weight:900;color:var(--text-0);letter-spacing:-0.04em;margin-bottom:12px;">
+          ★ <span style="color:var(--gold)">Alliance</span>
+        </div>
+        <div style="font-size:0.875rem;color:var(--text-3);margin-bottom:16px;">Lufthansa · Air India · and 25 more airlines</div>
+        <div style="font-size:0.75rem;color:var(--text-4);">1,000+ destinations worldwide</div>
+      </div>
+
+      <div class="glass-card" style="padding:28px;text-align:center;background:rgba(59,130,246,0.04);border-color:rgba(59,130,246,0.15);">
+        <div style="font-size:2rem;font-weight:900;color:var(--blue-400);letter-spacing:-0.04em;margin-bottom:12px;">
+          ✦ SkyTeam
+        </div>
+        <div style="font-size:0.875rem;color:var(--text-3);margin-bottom:16px;">19 member airlines across 6 continents</div>
+        <div style="font-size:0.75rem;color:var(--text-4);">1,052 destinations worldwide</div>
+      </div>
+
+      <div class="glass-card" style="padding:28px;text-align:center;">
+        <div style="font-size:2rem;font-weight:900;color:var(--text-0);letter-spacing:-0.04em;margin-bottom:12px;">
+          ◆ <span style="color:var(--cyan)">Oneworld</span>
+        </div>
+        <div style="font-size:0.875rem;color:var(--text-3);margin-bottom:16px;">BA · Qatar · American · and 10 more</div>
+        <div style="font-size:0.75rem;color:var(--text-4);">900+ destinations worldwide</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="nav-logo">
+          <div class="nav-logo-icon">✈</div>
+          Arnav <span style="color:var(--blue-400)">Flights</span>
+        </a>
+        <p>Your premium flight booking platform. Connecting millions of travellers to 200+ destinations worldwide.</p>
+        <div class="footer-social">
+          <button class="social-btn">𝕏</button>
+          <button class="social-btn">in</button>
+          <button class="social-btn">📘</button>
+          <button class="social-btn">📸</button>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul class="footer-links">
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="results.html">Search Flights</a></li>
+          <li><a href="airlines.html">Airlines</a></li>
+          <li><a href="booking.html">My Trips</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul class="footer-links">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Cancellations</a></li>
+          <li><a href="#">Refunds</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2024 Arnav Flights. All rights reserved.</div>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Cookie Policy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/search.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/auth.js"></script>
+<script>
+  function filterAirlines(query) {
+    const cards = document.querySelectorAll('.airline-card');
+    const q = query.toLowerCase();
+    let visible = 0;
+    cards.forEach(card => {
+      const name = card.dataset.name || '';
+      if (!q || name.includes(q)) {
+        card.style.display = '';
+        visible++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+    document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+  }
+
+  function setCategory(cat, btn) {
+    document.querySelectorAll('[data-cat]').forEach(b => {
+      b.style.background = '';
+      b.style.borderColor = '';
+      b.style.color = '';
+      b.className = 'btn btn-ghost btn-sm';
+    });
+    btn.style.background = 'rgba(59,130,246,0.1)';
+    btn.style.borderColor = 'rgba(59,130,246,0.3)';
+    btn.style.color = 'var(--blue-400)';
+    btn.className = 'btn btn-sm';
+
+    const cards = document.querySelectorAll('.airline-card');
+    let visible = 0;
+    cards.forEach(card => {
+      const cats = card.dataset.cat || '';
+      if (cat === 'all' || cats.includes(cat)) {
+        card.style.display = '';
+        visible++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+    document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+  }
+
+  function searchAirline(name) {
+    sessionStorage.setItem('searchParams', JSON.stringify({
+      from: 'Delhi', to: name,
+      dep: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+      pax: 1, cls: 'economy'
+    }));
+    showToast(`Searching ${name} flights...`, '✈');
+    setTimeout(() => window.location.href = 'results.html', 600);
+  }
+</script>
+</body>
+</html>

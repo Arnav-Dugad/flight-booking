@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — Arnav Flights</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
+</head>
+<body>
+
+<!-- Page Loader -->
+<div id="pageLoader" class="page-loader">
+  <div class="loader-plane">✈</div>
+  <div class="loader-logo">Arnav <span style="color:var(--blue-400)">Flights</span></div>
+  <div class="loader-bar"><div class="loader-progress"></div></div>
+</div>
+
+<!-- Demo Mode Bar -->
+<div class="demo-mode-bar" id="demoModeBar" style="display:flex;">
+  ⚡ <strong>Demo Mode</strong> — Running with local storage. &nbsp;
+  Use demo credentials below to explore all features.
+</div>
+
+<div class="auth-page">
+
+  <!-- Left: Auth Form -->
+  <div class="auth-left">
+    <div class="auth-box">
+
+      <!-- Logo -->
+      <a href="index.html" class="auth-logo">
+        <div class="auth-logo-icon">✈</div>
+        Arnav <span>Flights</span>
+      </a>
+
+      <!-- Dynamic title (changes with tab) -->
+      <h1 class="auth-title" id="authTitle">Welcome back</h1>
+      <p class="auth-subtitle" id="authSub">Sign in to access your bookings and profile.</p>
+
+      <!-- Tab switcher -->
+      <div class="auth-tabs">
+        <div class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Sign In</div>
+        <div class="auth-tab" id="tabSignup" onclick="switchTab('signup')">Create Account</div>
+      </div>
+
+      <!-- Message area -->
+      <div class="auth-message" id="authMsg">
+        <span id="authMsgIcon">⚠️</span>
+        <span id="authMsgText"></span>
+      </div>
+
+      <!-- ── LOGIN FORM ── -->
+      <form id="loginForm" class="auth-form" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" id="loginEmail" class="form-input" placeholder="your@email.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="loginPassword" class="form-input" placeholder="Enter your password" required autocomplete="current-password" style="padding-right:44px;">
+            <button type="button" class="password-toggle" onclick="togglePassword('loginPassword', this)">👁</button>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:20px;">
+          <span style="font-size:0.8125rem;color:var(--blue-400);cursor:pointer;" onclick="showForgot()">Forgot password?</span>
+        </div>
+        <button type="submit" class="btn btn-primary btn-auth" id="loginBtn">
+          <span id="loginBtnText">Sign In</span>
+        </button>
+      </form>
+
+      <!-- ── SIGNUP FORM ── -->
+      <form id="signupForm" class="auth-form" style="display:none;" onsubmit="handleSignup(event)">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" id="signupName" class="form-input" placeholder="Your full name" required autocomplete="name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" id="signupEmail" class="form-input" placeholder="your@email.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="signupPassword" class="form-input" placeholder="Min 6 characters" required autocomplete="new-password" style="padding-right:44px;">
+            <button type="button" class="password-toggle" onclick="togglePassword('signupPassword', this)">👁</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="signupConfirm" class="form-input" placeholder="Re-enter password" required style="padding-right:44px;">
+            <button type="button" class="password-toggle" onclick="togglePassword('signupConfirm', this)">👁</button>
+          </div>
+        </div>
+        <div style="margin-bottom:20px;display:flex;align-items:flex-start;gap:10px;">
+          <input type="checkbox" id="agreeTerms" required style="margin-top:3px;cursor:pointer;accent-color:var(--blue-600);">
+          <label for="agreeTerms" style="font-size:0.8125rem;color:var(--text-3);cursor:pointer;">
+            I agree to the <a href="#" style="color:var(--blue-400);">Terms of Service</a> and <a href="#" style="color:var(--blue-400);">Privacy Policy</a>
+          </label>
+        </div>
+        <button type="submit" class="btn btn-primary btn-auth" id="signupBtn">
+          <span id="signupBtnText">Create Account</span>
+        </button>
+      </form>
+
+      <!-- Divider -->
+      <div class="auth-divider">or continue with</div>
+
+      <!-- Social (UI only) -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">
+        <button class="btn btn-ghost" style="gap:8px;font-size:0.875rem;" onclick="socialLogin('Google')">
+          <span style="font-size:1.1rem;">🔵</span> Google
+        </button>
+        <button class="btn btn-ghost" style="gap:8px;font-size:0.875rem;" onclick="socialLogin('Apple')">
+          <span style="font-size:1.1rem;">🍎</span> Apple
+        </button>
+      </div>
+
+      <!-- Demo credentials box -->
+      <div class="demo-creds">
+        <div class="demo-creds-title">🔑 Demo Credentials</div>
+        <div class="demo-creds-row">
+          <span class="demo-creds-label">👤 Regular User</span>
+          <span class="demo-creds-val" onclick="fillCredentials('demo@arnavflights.com','Demo@1234')" title="Click to fill">
+            demo@arnavflights.com / Demo@1234
+          </span>
+        </div>
+        <div class="demo-creds-row">
+          <span class="demo-creds-label">⚙ Admin</span>
+          <span class="demo-creds-val" onclick="fillCredentials('admin@arnavflights.com','ArnavAdmin@2024')" title="Click to fill">
+            admin@arnavflights.com / ArnavAdmin@2024
+          </span>
+        </div>
+        <div style="font-size:0.6875rem;color:var(--text-5);margin-top:8px;">Click credentials to auto-fill the form</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Right: Brand panel -->
+  <div class="auth-right">
+    <div class="auth-right-grid"></div>
+    <div class="auth-right-content">
+      <span class="auth-right-plane">✈️</span>
+      <h2>Fly Smarter with<br><span class="gradient-text">Arnav Flights</span></h2>
+      <p>Join millions of travellers booking the best flights at the lowest prices — with zero hassle.</p>
+      <div class="auth-perks">
+        <div class="auth-perk">
+          <span class="auth-perk-icon">🎯</span>
+          <span>Best price guarantee across 50+ airlines</span>
+        </div>
+        <div class="auth-perk">
+          <span class="auth-perk-icon">⚡</span>
+          <span>Instant booking confirmation & e-ticket</span>
+        </div>
+        <div class="auth-perk">
+          <span class="auth-perk-icon">🔄</span>
+          <span>Free cancellation on most bookings</span>
+        </div>
+        <div class="auth-perk">
+          <span class="auth-perk-icon">📱</span>
+          <span>Manage all your trips in one place</span>
+        </div>
+        <div class="auth-perk">
+          <span class="auth-perk-icon">💎</span>
+          <span>Exclusive member-only deals & rewards</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="js/main.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/auth.js"></script>
+<script>
+
+  /* ── Check for redirect param ──────────────────────────────────── */
+  const urlParams = new URLSearchParams(location.search);
+  const redirectPage = urlParams.get('redirect') || 'index.html';
+  const initTab = urlParams.get('tab') || 'login';
+
+  /* If already logged in, redirect */
+  document.addEventListener('DOMContentLoaded', () => {
+    if (!window.af) return;
+    window.af.auth.onAuthStateChanged(user => {
+      if (user) {
+        window.location.href = decodeURIComponent(redirectPage);
+      }
+    });
+
+    if (initTab === 'signup') switchTab('signup');
+  });
+
+  /* ── Tab switching ─────────────────────────────────────────────── */
+  function switchTab(tab) {
+    const isLogin = tab === 'login';
+    document.getElementById('tabLogin').classList.toggle('active', isLogin);
+    document.getElementById('tabSignup').classList.toggle('active', !isLogin);
+    document.getElementById('loginForm').style.display  = isLogin ? 'block' : 'none';
+    document.getElementById('signupForm').style.display = isLogin ? 'none'  : 'block';
+    document.getElementById('authTitle').textContent = isLogin ? 'Welcome back' : 'Create your account';
+    document.getElementById('authSub').textContent   = isLogin
+      ? 'Sign in to access your bookings and profile.'
+      : 'Join Arnav Flights and start exploring the world.';
+    hideMsg();
+    // Update URL without reload
+    const url = new URL(location.href);
+    url.searchParams.set('tab', tab);
+    history.replaceState(null, '', url);
+  }
+
+  /* ── Show / hide message ───────────────────────────────────────── */
+  function showMsg(text, type = 'error', icon = '⚠️') {
+    const el = document.getElementById('authMsg');
+    document.getElementById('authMsgIcon').textContent = icon;
+    document.getElementById('authMsgText').textContent = text;
+    el.className = 'auth-message ' + type + ' show';
+  }
+  function hideMsg() {
+    document.getElementById('authMsg').className = 'auth-message';
+  }
+
+  /* ── Login handler ─────────────────────────────────────────────── */
+  async function handleLogin(e) {
+    e.preventDefault();
+    const email    = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const btn      = document.getElementById('loginBtn');
+    const btnText  = document.getElementById('loginBtnText');
+
+    if (!email || !password) { showMsg('Please fill in all fields.'); return; }
+    hideMsg();
+    btn.disabled = true;
+    btnText.textContent = '⏳ Signing in...';
+
+    try {
+      await window.af.auth.signInWithEmailAndPassword(email, password);
+      showMsg('Sign in successful! Redirecting...', 'success', '✅');
+      setTimeout(() => { window.location.href = decodeURIComponent(redirectPage); }, 600);
+    } catch(err) {
+      btn.disabled = false;
+      btnText.textContent = 'Sign In';
+      const msg = err.code === 'auth/user-disabled'
+        ? err.message
+        : err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found'
+          ? 'Invalid email or password. Try demo credentials below.'
+          : (err.message || 'Sign in failed. Please try again.');
+      showMsg(msg);
+    }
+  }
+
+  /* ── Signup handler ────────────────────────────────────────────── */
+  async function handleSignup(e) {
+    e.preventDefault();
+    const name     = document.getElementById('signupName').value.trim();
+    const email    = document.getElementById('signupEmail').value.trim();
+    const password = document.getElementById('signupPassword').value;
+    const confirm  = document.getElementById('signupConfirm').value;
+    const btn      = document.getElementById('signupBtn');
+    const btnText  = document.getElementById('signupBtnText');
+
+    if (!name) { showMsg('Please enter your name.'); return; }
+    if (password.length < 6) { showMsg('Password must be at least 6 characters.'); return; }
+    if (password !== confirm) { showMsg('Passwords do not match.'); return; }
+    hideMsg();
+    btn.disabled = true;
+    btnText.textContent = '⏳ Creating account...';
+
+    try {
+      const { user } = await window.af.auth.createUserWithEmailAndPassword(email, password);
+      await window.af.auth.updateProfile({ displayName: name });
+      showMsg('Account created! Redirecting...', 'success', '🎉');
+      setTimeout(() => { window.location.href = decodeURIComponent(redirectPage); }, 600);
+    } catch(err) {
+      btn.disabled = false;
+      btnText.textContent = 'Create Account';
+      const msg = err.code === 'auth/email-already-in-use'
+        ? 'This email is already registered. Try signing in instead.'
+        : (err.message || 'Account creation failed. Please try again.');
+      showMsg(msg);
+    }
+  }
+
+  /* ── Password visibility toggle ────────────────────────────────── */
+  function togglePassword(id, btn) {
+    const inp = document.getElementById(id);
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    btn.textContent = inp.type === 'password' ? '👁' : '🙈';
+  }
+
+  /* ── Fill demo credentials ─────────────────────────────────────── */
+  function fillCredentials(email, password) {
+    const isLogin = document.getElementById('tabLogin').classList.contains('active');
+    if (!isLogin) switchTab('login');
+    setTimeout(() => {
+      document.getElementById('loginEmail').value    = email;
+      document.getElementById('loginPassword').value = password;
+      showMsg('Credentials filled! Click "Sign In" to continue.', 'success', '✅');
+    }, isLogin ? 0 : 150);
+  }
+
+  /* ── Social login placeholder ───────────────────────────────────── */
+  function socialLogin(provider) {
+    showMsg(`${provider} Sign-In is available when Firebase is configured. Use demo credentials below.`, 'error', 'ℹ️');
+  }
+
+  /* ── Forgot password ────────────────────────────────────────────── */
+  function showForgot() {
+    showMsg('Password reset is available with real Firebase. Use demo credentials below.', 'error', 'ℹ️');
+  }
+</script>
+</body>
+</html>

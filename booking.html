@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Flight — Arnav Flights</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
+</head>
+<body>
+
+<!-- Page Loader -->
+<div id="pageLoader" class="page-loader">
+  <div class="loader-plane">✈</div>
+  <div class="loader-logo">Arnav <span style="color:var(--blue-400)">Flights</span></div>
+  <div class="loader-bar"><div class="loader-progress"></div></div>
+</div>
+
+<!-- Navigation -->
+<nav class="nav scrolled" id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon">✈</div>
+      Arnav <span>Flights</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="results.html">Search Flights</a></li>
+      <li><a href="airlines.html">Airlines</a></li>
+      <li><a href="booking.html" class="active">My Trips</a></li>
+    </ul>
+    <div class="nav-actions">
+      <div id="navGuest" style="display:flex;align-items:center;gap:8px;">
+        <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
+        <a href="login.html?tab=signup" class="btn btn-primary btn-sm">Sign Up</a>
+      </div>
+      <div id="navUser" style="display:none;align-items:center;gap:8px;">
+        <a href="admin.html" class="btn btn-ghost btn-sm" id="navAdminBtn" style="display:none;font-size:0.8125rem;">⚙ Admin</a>
+        <a href="profile.html" class="nav-avatar" id="navAvatar" data-tooltip="My Profile">AF</a>
+        <button class="btn btn-ghost btn-sm" id="navSignOutBtn">Sign Out</button>
+      </div>
+    </div>
+    <button class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Nav -->
+<div class="mobile-nav" id="mobileNav">
+  <button id="mobileClose" style="position:absolute;top:24px;right:24px;font-size:1.5rem;color:var(--text-3);cursor:pointer;">✕</button>
+  <ul class="mobile-nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="results.html">Search Flights</a></li>
+    <li><a href="airlines.html">Airlines</a></li>
+    <li><a href="booking.html" class="active">My Trips</a></li>
+  </ul>
+  <div id="mobileGuestLinks" style="display:flex;flex-direction:column;gap:8px;padding:0 24px;margin-top:16px;">
+    <a href="login.html" class="btn btn-primary" style="text-align:center;">Sign In</a>
+    <a href="login.html?tab=signup" class="btn btn-ghost" style="text-align:center;">Create Account</a>
+  </div>
+  <div id="mobileUserLinks" style="display:none;flex-direction:column;gap:8px;padding:0 24px;margin-top:16px;">
+    <div id="mobileUserName" style="font-size:0.9375rem;font-weight:600;color:var(--text-0);margin-bottom:4px;padding:0 4px;"></div>
+    <a href="profile.html" class="btn btn-ghost" style="text-align:left;">👤 My Profile</a>
+    <a href="admin.html" class="btn btn-ghost" id="mobileAdminBtn" style="display:none;text-align:left;">⚙ Admin Dashboard</a>
+    <button class="btn btn-ghost" id="mobileSignOut" style="text-align:left;color:var(--red-400,#f87171);">Sign Out</button>
+  </div>
+</div>
+
+<!-- Demo Mode Bar -->
+<div class="demo-mode-bar" id="demoModeBar"></div>
+
+<!-- Main -->
+<div class="container-wide">
+  <div class="booking-layout">
+
+    <!-- Left: Form -->
+    <div>
+      <!-- Page header -->
+      <div style="margin-bottom:28px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <a href="results.html" style="color:var(--text-4);font-size:0.875rem;display:flex;align-items:center;gap:4px;transition:color 0.15s;" onmouseover="this.style.color='var(--text-1)'" onmouseout="this.style.color='var(--text-4)'">
+            ← Back to results
+          </a>
+        </div>
+        <h1 style="font-size:1.75rem;font-weight:700;color:var(--text-0);">Complete Your Booking</h1>
+        <p style="color:var(--text-3);font-size:0.875rem;margin-top:4px;">Fill in passenger details and choose your seat</p>
+      </div>
+
+      <!-- Step indicator -->
+      <div class="booking-steps">
+        <div class="step active">
+          <div class="step-indicator">
+            <div class="step-circle">1</div>
+            <div class="step-label">Passengers</div>
+          </div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step">
+          <div class="step-indicator">
+            <div class="step-circle">2</div>
+            <div class="step-label">Seat</div>
+          </div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step">
+          <div class="step-indicator">
+            <div class="step-circle">3</div>
+            <div class="step-label">Extras</div>
+          </div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step">
+          <div class="step-indicator">
+            <div class="step-circle">4</div>
+            <div class="step-label">Payment</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── STEP 1: Passenger Details ────────────────────────── -->
+      <div class="step-form" data-step="1">
+
+        <!-- Adult passenger -->
+        <div class="form-section">
+          <div class="form-section-title">
+            <div class="form-section-icon">👤</div>
+            Passenger 1 — Adult
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Title</label>
+              <select class="form-select" required>
+                <option value="">Select</option>
+                <option>Mr.</option>
+                <option>Mrs.</option>
+                <option>Ms.</option>
+                <option>Dr.</option>
+              </select>
+            </div>
+            <div class="form-group full-width" style="display:none;"></div>
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              <input type="text" class="form-input" placeholder="As on passport" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              <input type="text" class="form-input" placeholder="As on passport" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Date of Birth</label>
+              <input type="date" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Nationality</label>
+              <select class="form-select" required>
+                <option value="">Select country</option>
+                <option value="IN" selected>India</option>
+                <option value="US">United States</option>
+                <option value="GB">United Kingdom</option>
+                <option value="AE">UAE</option>
+                <option value="SG">Singapore</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Passport Number</label>
+              <input type="text" class="form-input" placeholder="e.g. A1234567" style="text-transform:uppercase;" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Passport Expiry</label>
+              <input type="date" class="form-input" required>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact details -->
+        <div class="form-section">
+          <div class="form-section-title">
+            <div class="form-section-icon">📱</div>
+            Contact Information
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input type="email" class="form-input" placeholder="your@email.com" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input type="tel" class="form-input" placeholder="+91 98765 43210" required>
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label">Emergency Contact (Optional)</label>
+              <input type="tel" class="form-input" placeholder="+91 98765 43210">
+            </div>
+          </div>
+        </div>
+
+        <!-- Preferences -->
+        <div class="form-section">
+          <div class="form-section-title">
+            <div class="form-section-icon">🍽️</div>
+            Preferences
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Meal Preference</label>
+              <select class="form-select">
+                <option>No Preference</option>
+                <option>Vegetarian</option>
+                <option>Vegan</option>
+                <option>Jain</option>
+                <option>Gluten-Free</option>
+                <option>Kosher</option>
+                <option>Halal</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Special Assistance</label>
+              <select class="form-select">
+                <option>None Required</option>
+                <option>Wheelchair</option>
+                <option>Visual Impairment</option>
+                <option>Hearing Impairment</option>
+                <option>Unaccompanied Minor</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Frequent Flyer Program</label>
+              <select class="form-select">
+                <option>None</option>
+                <option>Air India Miles</option>
+                <option>IndiGo BluChip</option>
+                <option>Emirates Skywards</option>
+                <option>Qatar Privilege Club</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Frequent Flyer Number</label>
+              <input type="text" class="form-input" placeholder="Enter your FF number">
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;">
+          <button class="btn btn-primary btn-lg" onclick="goToStep(2)">
+            Continue to Seat Selection →
+          </button>
+        </div>
+      </div>
+
+      <!-- ── STEP 2: Seat Selection ───────────────────────────── -->
+      <div class="step-form" data-step="2" style="display:none;">
+
+        <!-- Seat map -->
+        <div class="seat-map">
+          <div class="form-section-title" style="margin-bottom:20px;">
+            <div class="form-section-icon">💺</div>
+            Choose Your Seat
+            <span id="selectedSeatInfo" style="margin-left:auto;font-size:0.8125rem;color:var(--text-4);font-weight:400;">No seat selected</span>
+          </div>
+
+          <!-- Class tabs for seat map -->
+          <div style="display:flex;gap:8px;margin-bottom:20px;">
+            <button class="btn btn-sm" style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:var(--gold);" onclick="showSeatClass('business')">Business Class</button>
+            <button class="btn btn-sm btn-ghost" onclick="showSeatClass('economy')">Economy Class</button>
+          </div>
+
+          <!-- Aircraft diagram -->
+          <div class="seat-map-plane" id="seatMapPlane">
+
+            <!-- First class / Business rows 1-3 -->
+            <div style="text-align:center;font-size:0.65rem;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px;">✦ Business Class ✦</div>
+
+            <div class="seat-row" data-row-type="business">
+              <div class="seat-row-num">1</div>
+              <div class="seat seat-premium" data-seat="1A">1A</div>
+              <div class="seat seat-premium" data-seat="1B">1B</div>
+              <div class="seat-aisle"></div>
+              <div class="seat seat-occupied" data-seat="1C">1C</div>
+              <div class="seat seat-occupied" data-seat="1D">1D</div>
+            </div>
+            <div class="seat-row" data-row-type="business">
+              <div class="seat-row-num">2</div>
+              <div class="seat seat-occupied" data-seat="2A">2A</div>
+              <div class="seat seat-premium" data-seat="2B">2B</div>
+              <div class="seat-aisle"></div>
+              <div class="seat seat-premium" data-seat="2C">2C</div>
+              <div class="seat seat-occupied" data-seat="2D">2D</div>
+            </div>
+            <div class="seat-row" data-row-type="business">
+              <div class="seat-row-num">3</div>
+              <div class="seat seat-premium" data-seat="3A">3A</div>
+              <div class="seat seat-occupied" data-seat="3B">3B</div>
+              <div class="seat-aisle"></div>
+              <div class="seat seat-occupied" data-seat="3C">3C</div>
+              <div class="seat seat-premium" data-seat="3D">3D</div>
+            </div>
+
+            <div style="height:1px;background:var(--glass-border);margin:16px -24px;"></div>
+            <div style="text-align:center;font-size:0.65rem;color:var(--blue-400);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px;">Economy Class</div>
+
+            <!-- Economy rows 4-12 -->
+            <div class="seat-row">
+              <div class="seat-row-num">4</div>
+              <div class="seat seat-available" data-seat="4A">4A</div>
+              <div class="seat seat-occupied"  data-seat="4B">4B</div>
+              <div class="seat seat-available" data-seat="4C">4C</div>
+              <div class="seat-aisle"></div>
+              <div class="seat seat-available" data-seat="4D">4D</div>
+              <div class="seat seat-available" data-seat="4E">4E</div>
+              <div class="seat seat-occupied"  data-seat="4F">4F</div>
+            </div>
+            <div class="seat-row">
+              <div class="seat-row-num">5</div>
+              <div class="seat seat-occupied"  data-seat="5A">5A</div>
+              <div class="seat seat-available" data-seat="5B">5B</div>
+              <div class="seat seat-occupied"  data-seat="5C">5C</div>
+              <div class="seat-aisle"></div>
+              <div class="seat seat-available" data-seat="5D">5D</div>
+              <div class="seat seat-occupied"  data-seat="5E">5E</div>
+              <div class="seat seat-available" data-seat="5F">5F</div>
+            </div>
+            <div class="seat-row">
+              <div class="seat-row-num">6</div>
+              <div class="seat seat-available" data-seat="6A">6A</div>
+              <div class="seat seat-available" data-seat="6B">6B</div>
+              <div class="seat seat-occupied"  data-seat="6C">6C</div>
+              <div class="seat-aisle"></div>
+              <div class="seat seat-occupied"  data-seat="6D">6D</div>
+              <div class="seat seat-available" data-seat="6E">6E</div>
+              <div class="seat seat-available" data-seat="6F">6F</div>
+            </div>
+            <div class="seat-row">
+              <div class="seat-row-num">7</div>
+              <div class="seat seat-occupied"  data-seat="7A">7A</div>
+              <div class="seat seat-available" data-seat="7B">7B</div>
+              <div class="seat seat-available" data-seat="7C">7C</div>
+              <div class="seat-aisle"></div>
+              <div class="seat seat-available" data-seat="7D">7D</div>
+              <div class="seat seat-available" data-seat="7E">7E</div>
+              <div class="seat seat-occupied"  data-seat="7F">7F</div>
+            </div>
+            <div class="seat-row">
+              <div class="seat-row-num">8</div>
+              <div class="seat seat-available" data-seat="8A">8A</div>
+              <div class="seat seat-occupied"  data-seat="8B">8B</div>
+              <div class="seat seat-occupied"  data-seat="8C">8C</div>
+              <div class="seat-aisle"></div>
+              <div class="seat seat-occupied"  data-seat="8D">8D</div>
+              <div class="seat seat-available" data-seat="8E">8E</div>
+              <div class="seat seat-available" data-seat="8F">8F</div>
+            </div>
+            <div class="seat-row">
+              <div class="seat-row-num">9</div>
+              <div class="seat seat-available" data-seat="9A">9A</div>
+              <div class="seat seat-available" data-seat="9B">9B</div>
+              <div class="seat seat-occupied"  data-seat="9C">9C</div>
+              <div class="seat-aisle"></div>
+              <div class="seat seat-available" data-seat="9D">9D</div>
+              <div class="seat seat-occupied"  data-seat="9E">9E</div>
+              <div class="seat seat-available" data-seat="9F">9F</div>
+            </div>
+
+            <!-- Legend -->
+            <div class="seat-legend">
+              <div class="seat-legend-item">
+                <div class="seat-legend-dot" style="background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.35);"></div>
+                Available
+              </div>
+              <div class="seat-legend-item">
+                <div class="seat-legend-dot" style="background:var(--blue-600);border-color:var(--blue-600);"></div>
+                Selected
+              </div>
+              <div class="seat-legend-item">
+                <div class="seat-legend-dot" style="background:rgba(71,85,105,0.2);border-color:rgba(71,85,105,0.3);"></div>
+                Occupied
+              </div>
+              <div class="seat-legend-item">
+                <div class="seat-legend-dot" style="background:rgba(245,158,11,0.1);border-color:rgba(245,158,11,0.35);"></div>
+                Business
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;gap:12px;">
+          <button class="btn btn-ghost btn-lg" onclick="goToStep(1)">← Back</button>
+          <button class="btn btn-primary btn-lg" onclick="goToStep(3)">Continue to Extras →</button>
+        </div>
+      </div>
+
+      <!-- ── STEP 3: Add-ons & Extras ────────────────────────── -->
+      <div class="step-form" data-step="3" style="display:none;">
+
+        <div class="form-section">
+          <div class="form-section-title">
+            <div class="form-section-icon">🧳</div>
+            Baggage Add-ons
+          </div>
+          <div style="display:grid;gap:12px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:16px;background:var(--bg-2);border:1px solid var(--glass-border);border-radius:var(--radius-md);">
+              <div>
+                <div style="font-size:0.9375rem;font-weight:500;color:var(--text-0);">Check-in Bag +15kg</div>
+                <div style="font-size:0.75rem;color:var(--text-4);margin-top:2px;">₹1,200 per passenger</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <span style="font-size:1.125rem;font-weight:600;color:var(--blue-400);">₹1,200</span>
+                <button class="btn btn-outline-blue btn-sm" onclick="addExtra(this,'bag15')">Add</button>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:16px;background:var(--bg-2);border:1px solid var(--glass-border);border-radius:var(--radius-md);">
+              <div>
+                <div style="font-size:0.9375rem;font-weight:500;color:var(--text-0);">Check-in Bag +25kg</div>
+                <div style="font-size:0.75rem;color:var(--text-4);margin-top:2px;">₹2,000 per passenger</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <span style="font-size:1.125rem;font-weight:600;color:var(--blue-400);">₹2,000</span>
+                <button class="btn btn-outline-blue btn-sm" onclick="addExtra(this,'bag25')">Add</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">
+            <div class="form-section-icon">🛡️</div>
+            Travel Protection
+          </div>
+          <div style="display:grid;gap:12px;">
+            <div style="padding:20px;background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.2);border-radius:var(--radius-md);">
+              <div style="display:flex;align-items:start;justify-content:space-between;">
+                <div style="flex:1;">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                    <span style="font-size:0.9375rem;font-weight:600;color:var(--text-0);">Standard Travel Insurance</span>
+                    <span style="padding:2px 8px;background:rgba(16,185,129,0.15);border-radius:9999px;font-size:0.625rem;font-weight:600;color:var(--emerald);text-transform:uppercase;">Recommended</span>
+                  </div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
+                    <div style="font-size:0.75rem;color:var(--text-3);">✓ Trip cancellation cover</div>
+                    <div style="font-size:0.75rem;color:var(--text-3);">✓ Medical up to ₹5L</div>
+                    <div style="font-size:0.75rem;color:var(--text-3);">✓ Baggage loss cover</div>
+                    <div style="font-size:0.75rem;color:var(--text-3);">✓ Flight delay cover</div>
+                  </div>
+                </div>
+                <div style="text-align:right;margin-left:20px;">
+                  <div style="font-size:1.25rem;font-weight:700;color:var(--emerald);">₹499</div>
+                  <div style="font-size:0.7rem;color:var(--text-4);">per person</div>
+                  <button class="btn btn-sm" style="margin-top:8px;background:rgba(16,185,129,0.15);color:var(--emerald);border:1px solid rgba(16,185,129,0.3);" onclick="addExtra(this,'insurance')">Add</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">
+            <div class="form-section-icon">🍱</div>
+            Pre-book Meals
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div style="padding:16px;background:var(--bg-2);border:1px solid var(--glass-border);border-radius:var(--radius-md);cursor:pointer;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--glass-border-hover)'" onmouseout="this.style.borderColor='var(--glass-border)'">
+              <div style="font-size:1.5rem;margin-bottom:8px;">🥗</div>
+              <div style="font-size:0.875rem;font-weight:500;color:var(--text-0);">Veg Meal</div>
+              <div style="font-size:0.75rem;color:var(--text-4);">₹350</div>
+            </div>
+            <div style="padding:16px;background:var(--bg-2);border:1px solid var(--glass-border);border-radius:var(--radius-md);cursor:pointer;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--glass-border-hover)'" onmouseout="this.style.borderColor='var(--glass-border)'">
+              <div style="font-size:1.5rem;margin-bottom:8px;">🍗</div>
+              <div style="font-size:0.875rem;font-weight:500;color:var(--text-0);">Non-Veg Meal</div>
+              <div style="font-size:0.75rem;color:var(--text-4);">₹400</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;gap:12px;">
+          <button class="btn btn-ghost btn-lg" onclick="goToStep(2)">← Back</button>
+          <button class="btn btn-primary btn-lg" onclick="goToStep(4)">Continue to Payment →</button>
+        </div>
+      </div>
+
+      <!-- ── STEP 4: Payment ─────────────────────────────────── -->
+      <div class="step-form" data-step="4" style="display:none;">
+
+        <!-- Payment methods -->
+        <div class="form-section">
+          <div class="form-section-title">
+            <div class="form-section-icon">💳</div>
+            Payment Method
+          </div>
+
+          <div style="display:flex;gap:8px;margin-bottom:20px;" id="paymentTabs">
+            <button class="btn btn-sm active-pay" data-pay="card" onclick="switchPayment('card')"
+              style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);color:var(--blue-400);">
+              💳 Card
+            </button>
+            <button class="btn btn-ghost btn-sm" data-pay="upi" onclick="switchPayment('upi')">📱 UPI</button>
+            <button class="btn btn-ghost btn-sm" data-pay="netbank" onclick="switchPayment('netbank')">🏦 Net Banking</button>
+            <button class="btn btn-ghost btn-sm" data-pay="wallet" onclick="switchPayment('wallet')">👛 Wallet</button>
+          </div>
+
+          <!-- Card form -->
+          <div id="payCard">
+            <div class="form-grid">
+              <div class="form-group full-width">
+                <label class="form-label">Card Number</label>
+                <input type="text" class="form-input" placeholder="4242 4242 4242 4242" maxlength="19"
+                  oninput="formatCard(this)" required>
+              </div>
+              <div class="form-group full-width">
+                <label class="form-label">Cardholder Name</label>
+                <input type="text" class="form-input" placeholder="Name as on card" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Expiry Date</label>
+                <input type="text" class="form-input" placeholder="MM / YY" maxlength="7"
+                  oninput="formatExpiry(this)" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">CVV</label>
+                <input type="password" class="form-input" placeholder="•••" maxlength="4" required>
+              </div>
+            </div>
+            <!-- Card brands -->
+            <div style="display:flex;gap:8px;margin-top:12px;">
+              <span style="padding:4px 10px;background:var(--glass-2);border:1px solid var(--glass-border);border-radius:6px;font-size:0.8125rem;color:var(--text-3);">VISA</span>
+              <span style="padding:4px 10px;background:var(--glass-2);border:1px solid var(--glass-border);border-radius:6px;font-size:0.8125rem;color:var(--text-3);">MC</span>
+              <span style="padding:4px 10px;background:var(--glass-2);border:1px solid var(--glass-border);border-radius:6px;font-size:0.8125rem;color:var(--text-3);">AMEX</span>
+              <span style="padding:4px 10px;background:var(--glass-2);border:1px solid var(--glass-border);border-radius:6px;font-size:0.8125rem;color:var(--text-3);">Rupay</span>
+            </div>
+          </div>
+
+          <!-- UPI form -->
+          <div id="payUPI" style="display:none;">
+            <div class="form-group">
+              <label class="form-label">UPI ID</label>
+              <input type="text" class="form-input" placeholder="yourname@upi" required>
+            </div>
+            <div style="display:flex;gap:12px;margin-top:16px;">
+              <div style="padding:12px 16px;background:var(--bg-2);border:1px solid var(--glass-border);border-radius:var(--radius-md);cursor:pointer;text-align:center;font-size:0.8125rem;color:var(--text-2);min-width:80px;">
+                <div style="font-size:1.25rem;margin-bottom:4px;">🟢</div>PhonePe
+              </div>
+              <div style="padding:12px 16px;background:var(--bg-2);border:1px solid var(--glass-border);border-radius:var(--radius-md);cursor:pointer;text-align:center;font-size:0.8125rem;color:var(--text-2);min-width:80px;">
+                <div style="font-size:1.25rem;margin-bottom:4px;">🔵</div>GPay
+              </div>
+              <div style="padding:12px 16px;background:var(--bg-2);border:1px solid var(--glass-border);border-radius:var(--radius-md);cursor:pointer;text-align:center;font-size:0.8125rem;color:var(--text-2);min-width:80px;">
+                <div style="font-size:1.25rem;margin-bottom:4px;">🟣</div>Paytm
+              </div>
+              <div style="padding:12px 16px;background:var(--bg-2);border:1px solid var(--glass-border);border-radius:var(--radius-md);cursor:pointer;text-align:center;font-size:0.8125rem;color:var(--text-2);min-width:80px;">
+                <div style="font-size:1.25rem;margin-bottom:4px;">🟡</div>BHIM
+              </div>
+            </div>
+          </div>
+
+          <!-- Net banking -->
+          <div id="payNetbank" style="display:none;">
+            <div class="form-group">
+              <label class="form-label">Select Bank</label>
+              <select class="form-select">
+                <option>Select your bank</option>
+                <option>State Bank of India</option>
+                <option>HDFC Bank</option>
+                <option>ICICI Bank</option>
+                <option>Axis Bank</option>
+                <option>Kotak Mahindra Bank</option>
+                <option>Punjab National Bank</option>
+                <option>Bank of Baroda</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Wallet -->
+          <div id="payWallet" style="display:none;">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+              <div style="padding:16px;background:var(--bg-2);border:1px solid var(--glass-border);border-radius:var(--radius-md);cursor:pointer;text-align:center;font-size:0.8125rem;color:var(--text-2);">
+                <div style="font-size:1.5rem;margin-bottom:6px;">🟣</div>Paytm Wallet
+              </div>
+              <div style="padding:16px;background:var(--bg-2);border:1px solid var(--glass-border);border-radius:var(--radius-md);cursor:pointer;text-align:center;font-size:0.8125rem;color:var(--text-2);">
+                <div style="font-size:1.5rem;margin-bottom:6px;">🔵</div>MobiKwik
+              </div>
+              <div style="padding:16px;background:var(--bg-2);border:1px solid var(--glass-border);border-radius:var(--radius-md);cursor:pointer;text-align:center;font-size:0.8125rem;color:var(--text-2);">
+                <div style="font-size:1.5rem;margin-bottom:6px;">🟢</div>Amazon Pay
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Promo code -->
+        <div class="form-section">
+          <div class="form-section-title">
+            <div class="form-section-icon">🎁</div>
+            Promo Code
+          </div>
+          <div style="display:flex;gap:10px;">
+            <input type="text" class="form-input" id="promoInput" placeholder="Enter promo code" style="flex:1;" onkeydown="if(event.key==='Enter')applyPromo()">
+            <button class="btn btn-outline-blue" onclick="applyPromo()">Apply</button>
+          </div>
+          <div id="promoMsg" style="margin-top:8px;font-size:0.8125rem;display:none;"></div>
+        </div>
+
+        <!-- Security notice -->
+        <div style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.15);border-radius:var(--radius-md);margin-bottom:20px;">
+          <span style="font-size:1.25rem;">🔒</span>
+          <div style="font-size:0.8125rem;color:var(--text-3);">
+            Your payment is secured with <strong style="color:var(--text-1)">256-bit SSL encryption</strong>. We never store your card details.
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;gap:12px;">
+          <button class="btn btn-ghost btn-lg" onclick="goToStep(3)">← Back</button>
+          <button class="btn btn-gold btn-xl" onclick="completeBooking()" style="min-width:200px;">
+            🔒 Pay & Confirm →
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right: Booking Summary -->
+    <div class="booking-summary">
+      <div class="summary-header">
+        <h3>Booking Summary</h3>
+      </div>
+
+      <!-- Flight info -->
+      <div class="summary-flight-info">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+          <div class="airline-logo-sm ai-color" id="summaryAirlineLogo" style="flex-shrink:0;">AI</div>
+          <div>
+            <div style="font-size:0.9375rem;font-weight:600;color:var(--text-0);" id="summaryAirline">Air India</div>
+            <div style="font-size:0.75rem;color:var(--text-4);" id="summaryFlight">AI-301</div>
+          </div>
+        </div>
+        <div class="summary-row">
+          <span class="summary-row-label">Departure</span>
+          <span class="summary-row-value" id="summaryDep">06:15 DEL</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-row-label">Arrival</span>
+          <span class="summary-row-value" id="summaryArr">09:30 BOM</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-row-label">Duration</span>
+          <span class="summary-row-value" id="summaryDuration">2h 15m</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-row-label">Class</span>
+          <span class="summary-row-value" id="summaryClass">Economy</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-row-label">Baggage</span>
+          <span class="summary-row-value" id="summaryBaggage">15kg</span>
+        </div>
+      </div>
+
+      <!-- Price breakdown -->
+      <div class="summary-price-breakdown">
+        <div class="summary-row" style="margin-bottom:8px;">
+          <span class="summary-row-label">Base Fare</span>
+          <span class="summary-row-value" id="summaryBase">₹4,850</span>
+        </div>
+        <div class="summary-row" style="margin-bottom:8px;">
+          <span class="summary-row-label">Taxes & Fees</span>
+          <span class="summary-row-value" id="summaryTaxes">₹582</span>
+        </div>
+        <div class="summary-row" style="margin-bottom:8px;">
+          <span class="summary-row-label">Convenience Fee</span>
+          <span class="summary-row-value" id="summaryFees">₹350</span>
+        </div>
+        <div id="extraCharges"></div>
+        <div id="promoDiscount" style="display:none;" class="summary-row">
+          <span class="summary-row-label" style="color:var(--emerald);">Promo Discount</span>
+          <span class="summary-row-value" style="color:var(--emerald);" id="promoDiscountAmt">−₹0</span>
+        </div>
+      </div>
+
+      <!-- Total -->
+      <div class="summary-total">
+        <div>
+          <div class="summary-total-label">Total Amount</div>
+          <div style="font-size:0.75rem;color:var(--text-4);">Inclusive of all taxes</div>
+        </div>
+        <div class="summary-total-amount" id="summaryTotal">₹5,782</div>
+      </div>
+
+      <!-- What's included -->
+      <div style="padding:16px 24px;border-top:1px solid var(--glass-border);">
+        <div style="font-size:0.75rem;font-weight:600;color:var(--text-4);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Included</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="font-size:0.8125rem;color:var(--text-3);display:flex;align-items:center;gap:6px;">
+            <span style="color:var(--emerald);">✓</span> Cabin baggage (7kg)
+          </div>
+          <div style="font-size:0.8125rem;color:var(--text-3);display:flex;align-items:center;gap:6px;">
+            <span style="color:var(--emerald);">✓</span> Free meal onboard
+          </div>
+          <div style="font-size:0.8125rem;color:var(--text-3);display:flex;align-items:center;gap:6px;">
+            <span style="color:var(--emerald);">✓</span> E-ticket via email
+          </div>
+          <div style="font-size:0.8125rem;color:var(--text-3);display:flex;align-items:center;gap:6px;">
+            <span style="color:var(--emerald);">✓</span> 24/7 customer support
+          </div>
+        </div>
+      </div>
+
+      <!-- Trust badges -->
+      <div style="padding:14px 24px;border-top:1px solid var(--glass-border);display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+        <div style="font-size:0.75rem;color:var(--text-4);display:flex;align-items:center;gap:4px;">🔒 SSL Secured</div>
+        <div style="font-size:0.75rem;color:var(--text-4);display:flex;align-items:center;gap:4px;">⚡ Instant Confirm</div>
+        <div style="font-size:0.75rem;color:var(--text-4);display:flex;align-items:center;gap:4px;">✓ Best Price</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding-top:24px;border-top:1px solid var(--glass-border);">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-icon">✈</div>
+        Arnav <span style="color:var(--blue-400)">Flights</span>
+      </a>
+      <div style="font-size:0.8125rem;color:var(--text-5);">© 2024 Arnav Flights. All rights reserved.</div>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/search.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/auth.js"></script>
+<script>
+  // Payment tab switcher
+  function switchPayment(type) {
+    ['card','upi','netbank','wallet'].forEach(t => {
+      const el = document.getElementById('pay' + t.charAt(0).toUpperCase() + t.slice(1));
+      if (el) el.style.display = t === type ? 'block' : 'none';
+    });
+    document.querySelectorAll('[data-pay]').forEach(btn => {
+      const isActive = btn.dataset.pay === type;
+      btn.style.background = isActive ? 'rgba(59,130,246,0.1)' : '';
+      btn.style.borderColor = isActive ? 'rgba(59,130,246,0.3)' : '';
+      btn.style.color = isActive ? 'var(--blue-400)' : '';
+    });
+  }
+  // Needed for first load:
+  switchPayment('card');
+
+  // Card number formatting
+  function formatCard(input) {
+    let val = input.value.replace(/\D/g,'').substring(0,16);
+    input.value = val.match(/.{1,4}/g)?.join(' ') ?? val;
+  }
+  function formatExpiry(input) {
+    let val = input.value.replace(/\D/g,'').substring(0,4);
+    if (val.length >= 2) val = val.substring(0,2) + ' / ' + val.substring(2);
+    input.value = val;
+  }
+
+  // Add extra
+  let extras = {};
+  function addExtra(btn, key) {
+    if (btn.textContent.trim() === 'Add') {
+      btn.textContent = '✓ Added';
+      btn.style.background = 'rgba(16,185,129,0.1)';
+      btn.style.borderColor = 'rgba(16,185,129,0.3)';
+      btn.style.color = 'var(--emerald)';
+      extras[key] = true;
+    } else {
+      btn.textContent = 'Add';
+      btn.style.background = '';
+      btn.style.borderColor = '';
+      btn.style.color = '';
+      delete extras[key];
+    }
+  }
+
+  // Promo code
+  const VALID_PROMOS = { 'ARNAV500': 500, 'ARNAV2000': 2000, 'WELCOME': 300 };
+  let promoDiscount = 0;
+  function applyPromo() {
+    const code = document.getElementById('promoInput').value.trim().toUpperCase();
+    const msg = document.getElementById('promoMsg');
+    const discountEl = document.getElementById('promoDiscount');
+    const discountAmt = document.getElementById('promoDiscountAmt');
+    msg.style.display = 'block';
+    if (VALID_PROMOS[code]) {
+      promoDiscount = VALID_PROMOS[code];
+      msg.textContent = `✓ Promo applied! You save ₹${promoDiscount.toLocaleString()}`;
+      msg.style.color = 'var(--emerald)';
+      discountEl.style.display = 'flex';
+      discountAmt.textContent = `−₹${promoDiscount.toLocaleString()}`;
+      showToast(`₹${promoDiscount.toLocaleString()} discount applied!`, '🎁');
+    } else {
+      promoDiscount = 0;
+      msg.textContent = '✗ Invalid promo code. Try ARNAV500.';
+      msg.style.color = 'var(--rose)';
+      discountEl.style.display = 'none';
+    }
+  }
+
+  // Complete booking
+  function completeBooking() {
+    const btn = event.target;
+    btn.disabled = true;
+    btn.textContent = '⏳ Processing...';
+    showToast('Processing your payment...', '💳');
+    setTimeout(() => {
+      window.location.href = 'confirmation.html';
+    }, 2000);
+  }
+
+  function showSeatClass(cls) {
+    showToast(cls === 'business' ? 'Showing Business Class seats' : 'Showing Economy seats', '💺');
+  }
+</script>
+</body>
+</html>
